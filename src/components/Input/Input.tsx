@@ -1,19 +1,26 @@
-import { UseFormRegister } from 'react-hook-form'
-import { Schema } from 'src/utils/rules'
+import { InputHTMLAttributes } from 'react'
+import { UseFormRegister, FieldValues, FieldPath } from 'react-hook-form'
 
-type FormInputs = Schema
-
-interface Props {
-  name: keyof FormInputs
+interface Props<TFieldValues extends FieldValues> extends InputHTMLAttributes<HTMLInputElement> {
+  name: FieldPath<TFieldValues>
   type: React.HTMLInputTypeAttribute
   placeholder?: string
   autoComplete?: string
   errorMessage?: string
   className?: string
-  register: UseFormRegister<FormInputs>
+  register: UseFormRegister<TFieldValues>
 }
 
-function Input({ type, placeholder, name, autoComplete, errorMessage, className, register }: Props) {
+function Input<TFieldValues extends FieldValues>({
+  type,
+  placeholder,
+  name,
+  autoComplete,
+  errorMessage,
+  className,
+  register,
+  ...rest
+}: Props<TFieldValues>) {
   return (
     <div className={className}>
       <input
@@ -22,6 +29,7 @@ function Input({ type, placeholder, name, autoComplete, errorMessage, className,
         placeholder={placeholder}
         autoComplete={autoComplete}
         {...register(name)}
+        {...rest}
       />
       <div className='ml-2 mt-1 min-h-[1.25rem] text-sm text-red-600'>{errorMessage}</div>
     </div>

@@ -58,7 +58,7 @@ function Register() {
             <form className='mx-5 rounded bg-white p-10 shadow-sm' onSubmit={onSubmit} noValidate>
               <div className='text-2xl'>Đăng ký</div>
               <div className='mt-8'>
-                <Input
+                <Input<FormData>
                   name='email'
                   type='email'
                   placeholder='Email'
@@ -67,7 +67,7 @@ function Register() {
                   register={register}
                 />
 
-                <Input
+                <Input<FormData>
                   name='password'
                   type='password'
                   placeholder='Password'
@@ -76,7 +76,8 @@ function Register() {
                   errorMessage={errors.password?.message}
                   register={register}
                 />
-                <Input
+
+                <Input<FormData>
                   name='confirm_password'
                   type='password'
                   placeholder='Confirm password'
@@ -85,15 +86,15 @@ function Register() {
                   errorMessage={errors.confirm_password?.message}
                   register={register}
                 />
+              </div>
 
-                <div className='mt-4'>
-                  <button
-                    type='submit'
-                    className='w-full rounded bg-red-500 py-3 text-sm uppercase text-white hover:bg-red-600'
-                  >
-                    Đăng ký
-                  </button>
-                </div>
+              <div className='mt-4'>
+                <button
+                  type='submit'
+                  className='w-full rounded bg-red-500 py-3 text-sm uppercase text-white hover:bg-red-600'
+                >
+                  Đăng ký
+                </button>
               </div>
               <div className='mt-8'>
                 <div className='flex justify-center'>
