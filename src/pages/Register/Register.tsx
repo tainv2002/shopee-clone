@@ -1,8 +1,12 @@
-import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { useMutation } from '@tanstack/react-query'
 import { yupResolver } from '@hookform/resolvers/yup'
+import _ from 'lodash'
+
 import Input from 'src/components/Input'
 import { schema, Schema } from 'src/utils/rules'
+import { registerAccount } from 'src/apis/auth/auth.api'
 
 type FormData = Schema
 
@@ -10,22 +14,24 @@ function Register() {
   const {
     register,
     handleSubmit,
-    watch,
-    getValues,
     formState: { errors }
   } = useForm<FormData>({
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = handleSubmit(
-    (data) => {
-      console.log(data)
-    },
-    () => {
-      const password = getValues('password')
-      console.log(password)
-    }
-  )
+  const registerAccountMutation = useMutation({
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => registerAccount(body)
+  })
+
+  const onSubmit = handleSubmit((data) => {
+    const body = _.omit(data, ['confirm_password'])
+
+    registerAccountMutation.mutate(body, {
+      onSuccess: (data) => {
+        console.log(data)
+      }
+    })
+  })
 
   // const password = watch('password')
 
@@ -60,7 +66,7 @@ function Register() {
                 <Input
                   name='confirm_password'
                   type='password'
-                  placeholder='Email'
+                  placeholder='Confirm password'
                   className='mt-2'
                   autoComplete='on'
                   errorMessage={errors.confirm_password?.message}
