@@ -12,11 +12,12 @@ import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { ErrorResponseApi } from 'src/types/utils.type'
 import { AppContext } from 'src/contexts/app.context'
 import Button from 'src/components/Button'
+import path from 'src/constants/path'
 
 type FormData = Schema
 
 function Register() {
-  const { setIsAuthenticated } = useContext(AppContext)
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const navigate = useNavigate()
 
   const {
@@ -36,8 +37,9 @@ function Register() {
     const body = _.omit(data, ['confirm_password'])
 
     registerAccountMutation.mutate(body, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         setIsAuthenticated(true)
+        setProfile(data.data.data.user)
         navigate('/')
       },
       onError: (error) => {
@@ -108,7 +110,7 @@ function Register() {
               <div className='mt-8'>
                 <div className='flex justify-center'>
                   <span className='text-gray-400'>Bạn đã có tài khoản?</span>
-                  <Link to='/login' className='ml-1 text-red-400'>
+                  <Link to={path.login} className='ml-1 text-red-400'>
                     Đăng nhập
                   </Link>
                 </div>

@@ -6,17 +6,18 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import Input from 'src/components/Input'
 import { loginAccount } from 'src/apis/auth/auth.api'
-import { ErrorResponseApi } from 'src/types/utils.type'
+import { ErrorResponseApi, SuccessResponseApi } from 'src/types/utils.type'
 import { Schema, schema } from 'src/utils/rules'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { AppContext } from 'src/contexts/app.context'
 import Button from 'src/components/Button'
+import path from 'src/constants/path'
 
 type FormData = Omit<Schema, 'confirm_password'>
 const loginSchema = schema.omit(['confirm_password'])
 
 function Login() {
-  const { setIsAuthenticated } = useContext(AppContext)
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const navigate = useNavigate()
 
   const {
@@ -34,8 +35,9 @@ function Login() {
 
   const onSubmit = handleSubmit((data) => {
     loginAccountMutation.mutate(data, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         setIsAuthenticated(true)
+        setProfile(data.data.data.user)
         navigate('/')
       },
       onError: (error) => {
@@ -99,7 +101,7 @@ function Login() {
               <div className='mt-8'>
                 <div className='flex justify-center'>
                   <span className='text-gray-400'>Bạn chưa có tài khoản?</span>
-                  <Link to='/register' className='ml-1 text-red-400'>
+                  <Link to={path.register} className='ml-1 text-red-400'>
                     Đăng ký
                   </Link>
                 </div>
