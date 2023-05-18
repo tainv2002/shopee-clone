@@ -8,7 +8,7 @@ import Input from 'src/components/Input'
 import { schema, Schema } from 'src/utils/rules'
 import { registerAccount } from 'src/apis/auth/auth.api'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
-import { ResponseApi } from 'src/types/utils.type'
+import { ErrorResponseApi } from 'src/types/utils.type'
 
 type FormData = Schema
 
@@ -34,7 +34,7 @@ function Register() {
         console.log(data)
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityError<ResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
+        if (isAxiosUnprocessableEntityError<ErrorResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
           const formError = error.response?.data.data
 
           if (formError) {

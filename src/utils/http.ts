@@ -1,5 +1,7 @@
 import axios, { AxiosError, HttpStatusCode } from 'axios'
 import { toast } from 'react-toastify'
+import { AuthResponse } from 'src/types/auth.type'
+import { clearAccessTokenFromLS, getAccessTokenFromLS, saveAccessTokenToLS } from './auth'
 
 const http = axios.create({
   baseURL: 'https://api-ecom.duthanhduoc.com/',
@@ -10,11 +12,13 @@ const http = axios.create({
 // Add a request interceptor
 http.interceptors.request.use(
   function (config) {
-    // Do something before request is sent
+    const access_token = getAccessTokenFromLS()
+    if (access_token && config.headers) {
+      config.headers.authorization = access_token
+    }
     return config
   },
   function (error) {
-    // Do something with request error
     return Promise.reject(error)
   }
 )
@@ -22,13 +26,16 @@ http.interceptors.request.use(
 // Add a response interceptor
 http.interceptors.response.use(
   function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
+    const url = response.config.url
+    if (url === 'login' || url === 'register') {
+      const access_token = (response.data as AuthResponse).data?.access_token
+      saveAccessTokenToLS(access_token)
+    } else if (url === 'logout') {
+      clearAccessTokenFromLS()
+    }
     return response
   },
   function (error: AxiosError) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
     if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const data: any | undefined = error.response?.data

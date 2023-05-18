@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 import { loginAccount } from 'src/apis/auth/auth.api'
 import Input from 'src/components/Input'
-import { ResponseApi } from 'src/types/utils.type'
+import { ErrorResponseApi } from 'src/types/utils.type'
 import { Schema, schema } from 'src/utils/rules'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 
@@ -32,7 +32,7 @@ function Login() {
         console.log(data)
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityError<ResponseApi<FormData>>(error)) {
+        if (isAxiosUnprocessableEntityError<ErrorResponseApi<FormData>>(error)) {
           const formError = error.response?.data.data
 
           if (formError) {

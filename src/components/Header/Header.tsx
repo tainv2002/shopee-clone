@@ -1,54 +1,27 @@
-import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import {
-  useFloating,
-  useInteractions,
-  useHover,
-  arrow,
-  offset,
-  shift,
-  safePolygon,
-  FloatingPortal,
-  FloatingArrow,
-  autoUpdate
-} from '@floating-ui/react'
-import { motion, AnimatePresence } from 'framer-motion'
 
-const ARROW_HEIGHT = 7
-const GAP = 2
+import Popover from '../Popover'
 
 function Header() {
-  const arrowRef = useRef<SVGSVGElement | null>(null)
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-
-  const { refs, floatingStyles, context, middlewareData } = useFloating({
-    open: isOpen,
-    onOpenChange: setIsOpen,
-    placement: 'bottom-end',
-    middleware: [
-      offset(ARROW_HEIGHT + GAP),
-      shift(),
-      arrow({
-        element: arrowRef
-      })
-    ],
-    whileElementsMounted: autoUpdate
-  })
-
-  const hover = useHover(context, {
-    handleClose: safePolygon()
-  })
-
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover])
-
   return (
     <header className='bg-[linear-gradient(-180deg,#f53d2d,#f63)] pb-5 pt-1'>
       <div className='container'>
         <div className='flex justify-end gap-4'>
-          <div
+          <Popover
+            as='span'
             className='flex cursor-pointer items-center gap-0.5 py-1 text-sm text-white hover:text-gray-300'
-            ref={refs.setReference}
-            {...getReferenceProps()}
+            renderPopover={
+              <div className='w-44 rounded-sm bg-white shadow-md'>
+                <div className='flex flex-col'>
+                  <button type='button' className='block px-2 py-3 text-left text-sm text-black hover:text-orange'>
+                    Tiếng Việt
+                  </button>
+                  <button type='button' className='block px-2 py-3 text-left text-sm text-black hover:text-orange'>
+                    Tiếng Anh
+                  </button>
+                </div>
+              </div>
+            }
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -75,46 +48,35 @@ function Header() {
             >
               <path strokeLinecap='round' strokeLinejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' />
             </svg>
-          </div>
+          </Popover>
 
-          <FloatingPortal>
-            <AnimatePresence>
-              {isOpen && (
-                <div ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0 }}
-                    transition={{ duration: 0.2 }}
-                    style={{
-                      transformOrigin: `${middlewareData.arrow?.x}px top`
-                    }}
+          <Popover
+            className='flex cursor-pointer items-center gap-0.5 py-1 text-sm text-white hover:text-gray-300'
+            renderPopover={
+              <div className='w-40 rounded-sm bg-white shadow-md'>
+                <div className='flex flex-col'>
+                  <Link
+                    to='/'
+                    className='block px-2 py-3 text-left text-sm text-black hover:bg-gray-100 hover:text-cyan-300'
                   >
-                    <FloatingArrow ref={arrowRef} context={context} fill='white' />
-
-                    <div className='w-44 rounded-sm bg-white shadow-md'>
-                      <div className='flex flex-col'>
-                        <button
-                          type='button'
-                          className='block px-2 py-3 text-left text-sm text-black hover:text-orange'
-                        >
-                          Tiếng Việt
-                        </button>
-                        <button
-                          type='button'
-                          className='block px-2 py-3 text-left text-sm text-black hover:text-orange'
-                        >
-                          Tiếng Anh
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
+                    Tài khoản của tôi
+                  </Link>
+                  <Link
+                    to='/'
+                    className='block px-2 py-3 text-left text-sm text-black hover:bg-gray-100 hover:text-cyan-300'
+                  >
+                    Đơn mua
+                  </Link>
+                  <button
+                    type='button'
+                    className='block px-2 py-3 text-left text-sm text-black hover:bg-gray-100 hover:text-cyan-300'
+                  >
+                    Đăng xuất
+                  </button>
                 </div>
-              )}
-            </AnimatePresence>
-          </FloatingPortal>
-
-          <div className='flex cursor-pointer items-center gap-0.5 py-1 text-sm text-white hover:text-gray-300'>
+              </div>
+            }
+          >
             <div className='h-5 w-5 flex-shrink-0'>
               <img
                 className='h-full w-full rounded-full object-cover'
@@ -123,7 +85,7 @@ function Header() {
               />
             </div>
             <div>Tài Văn</div>
-          </div>
+          </Popover>
         </div>
 
         <div className='mt-2 grid grid-cols-12 items-end gap-4'>
@@ -163,22 +125,106 @@ function Header() {
           </form>
 
           <div className='col-span-1'>
-            <Link to='/cart' className='flex justify-center text-white'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth={1.5}
-                stroke='currentColor'
-                className='h-6 w-6 flex-shrink-0'
+            <div className='flex justify-center'>
+              <Popover
+                className='px-4'
+                renderPopover={
+                  <div className='w-[400px] rounded-sm bg-white shadow-md'>
+                    <div className='p-2.5 text-sm font-medium capitalize text-gray-400'>Sản phẩm mới thêm</div>
+
+                    <div className='flex flex-col'>
+                      <div className='5 flex cursor-pointer justify-start gap-2.5 p-2 hover:bg-slate-100'>
+                        <div className='h-10 w-10 shrink-0'>
+                          <img
+                            src='https://down-vn.img.susercontent.com/file/sg-11134201-22090-mzdzxahjyuhvd5_tn'
+                            alt='Cart'
+                            className='w-full object-cover'
+                          />
+                        </div>
+                        <div className='truncate text-sm text-black'>
+                          Áo Khoác Gió Teelab Local Brand Unisex Sporty A/W 2022 Jacket AK048
+                        </div>
+                        <div className='ml-auto text-sm text-red-500'>₫299.000</div>
+                      </div>
+
+                      <div className='5 flex cursor-pointer justify-start gap-2.5 p-2 hover:bg-slate-100'>
+                        <div className='h-10 w-10 shrink-0'>
+                          <img
+                            src='https://down-vn.img.susercontent.com/file/sg-11134201-22090-mzdzxahjyuhvd5_tn'
+                            alt='Cart'
+                            className='w-full object-cover'
+                          />
+                        </div>
+                        <div className='truncate text-sm text-black'>
+                          Áo Khoác Gió Teelab Local Brand Unisex Sporty A/W 2022 Jacket AK048
+                        </div>
+                        <div className='ml-auto text-sm text-red-500'>₫299.000</div>
+                      </div>
+
+                      <div className='5 flex cursor-pointer justify-start gap-2.5 p-2 hover:bg-slate-100'>
+                        <div className='h-10 w-10 shrink-0'>
+                          <img
+                            src='https://down-vn.img.susercontent.com/file/sg-11134201-22090-mzdzxahjyuhvd5_tn'
+                            alt='Cart'
+                            className='w-full object-cover'
+                          />
+                        </div>
+                        <div className='truncate text-sm text-black'>
+                          Áo Khoác Gió Teelab Local Brand Unisex Sporty A/W 2022 Jacket AK048
+                        </div>
+                        <div className='ml-auto text-sm text-red-500'>₫299.000</div>
+                      </div>
+
+                      <div className='5 flex cursor-pointer justify-start gap-2.5 p-2 hover:bg-slate-100'>
+                        <div className='h-10 w-10 shrink-0'>
+                          <img
+                            src='https://down-vn.img.susercontent.com/file/sg-11134201-22090-mzdzxahjyuhvd5_tn'
+                            alt='Cart'
+                            className='w-full object-cover'
+                          />
+                        </div>
+                        <div className='truncate text-sm text-black'>
+                          Áo Khoác Gió Teelab Local Brand Unisex Sporty A/W 2022 Jacket AK048
+                        </div>
+                        <div className='ml-auto text-sm text-red-500'>₫299.000</div>
+                      </div>
+                    </div>
+
+                    <div className='p-2.5'>
+                      <div className='flex justify-end'>
+                        <Link
+                          to='/cart'
+                          className='inline-block rounded-sm bg-orange px-[10px] py-1.5 text-sm capitalize text-white hover:bg-opacity-80'
+                        >
+                          Xem giỏ hàng
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                }
               >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z'
-                />
-              </svg>
-            </Link>
+                <Link to='/cart' className='relative text-white'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    strokeWidth={1.5}
+                    stroke='currentColor'
+                    className='h-6 w-6 flex-shrink-0'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z'
+                    />
+                  </svg>
+
+                  <span className='absolute right-[-8px] top-[-8px] h-4 w-5 rounded-full bg-white text-center text-sm leading-4 text-gray-500 shadow-md'>
+                    3
+                  </span>
+                </Link>
+              </Popover>
+            </div>
           </div>
         </div>
       </div>
