@@ -1,12 +1,29 @@
+import { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
 
 import Popover from '../Popover'
+import { logoutAccount } from 'src/apis/auth/auth.api'
+import { AppContext } from 'src/contexts/app.context'
 
 function Header() {
+  const { isAuthenticated, setIsAuthenticated } = useContext(AppContext)
+
+  const logoutMutation = useMutation({
+    mutationFn: logoutAccount,
+    onSuccess: () => {
+      setIsAuthenticated(false)
+    }
+  })
+
+  const handleLogout = () => {
+    logoutMutation.mutate()
+  }
+
   return (
     <header className='bg-[linear-gradient(-180deg,#f53d2d,#f63)] pb-5 pt-1'>
       <div className='container'>
-        <div className='flex justify-end gap-4'>
+        <div className='flex items-center justify-end gap-4'>
           <Popover
             as='span'
             className='flex cursor-pointer items-center gap-0.5 py-1 text-sm text-white hover:text-gray-300'
@@ -50,42 +67,63 @@ function Header() {
             </svg>
           </Popover>
 
-          <Popover
-            className='flex cursor-pointer items-center gap-0.5 py-1 text-sm text-white hover:text-gray-300'
-            renderPopover={
-              <div className='w-40 rounded-sm bg-white shadow-md'>
-                <div className='flex flex-col'>
-                  <Link
-                    to='/'
-                    className='block px-2 py-3 text-left text-sm text-black hover:bg-gray-100 hover:text-cyan-300'
-                  >
-                    Tài khoản của tôi
-                  </Link>
-                  <Link
-                    to='/'
-                    className='block px-2 py-3 text-left text-sm text-black hover:bg-gray-100 hover:text-cyan-300'
-                  >
-                    Đơn mua
-                  </Link>
-                  <button
-                    type='button'
-                    className='block px-2 py-3 text-left text-sm text-black hover:bg-gray-100 hover:text-cyan-300'
-                  >
-                    Đăng xuất
-                  </button>
+          {isAuthenticated && (
+            <Popover
+              className='flex cursor-pointer items-center gap-0.5 py-1 text-sm text-white hover:text-gray-300'
+              renderPopover={
+                <div className='w-40 rounded-sm bg-white shadow-md'>
+                  <div className='flex flex-col'>
+                    <Link
+                      to='/profile'
+                      className='block px-2 py-3 text-left text-sm text-black hover:bg-gray-100 hover:text-cyan-300'
+                    >
+                      Tài khoản của tôi
+                    </Link>
+                    <Link
+                      to='/'
+                      className='block px-2 py-3 text-left text-sm text-black hover:bg-gray-100 hover:text-cyan-300'
+                    >
+                      Đơn mua
+                    </Link>
+                    <button
+                      type='button'
+                      className='block px-2 py-3 text-left text-sm text-black hover:bg-gray-100 hover:text-cyan-300'
+                      onClick={handleLogout}
+                    >
+                      Đăng xuất
+                    </button>
+                  </div>
                 </div>
+              }
+            >
+              <div className='h-5 w-5 flex-shrink-0'>
+                <img
+                  className='h-full w-full rounded-full object-cover'
+                  src='https://down-vn.img.susercontent.com/file/e1fcc56b8b7805ecfab1fb82b10c008c_tn'
+                  alt=''
+                />
               </div>
-            }
-          >
-            <div className='h-5 w-5 flex-shrink-0'>
-              <img
-                className='h-full w-full rounded-full object-cover'
-                src='https://down-vn.img.susercontent.com/file/e1fcc56b8b7805ecfab1fb82b10c008c_tn'
-                alt=''
-              />
-            </div>
-            <div>Tài Văn</div>
-          </Popover>
+              <div>Tài Văn</div>
+            </Popover>
+          )}
+
+          {!isAuthenticated && (
+            <>
+              <Link
+                to='register'
+                className='flex cursor-pointer items-center gap-0.5 py-1 text-sm text-white hover:text-gray-300'
+              >
+                Đăng ký
+              </Link>
+              <div className='h-4 border-r-[1px] border-r-white/40'></div>
+              <Link
+                to='login'
+                className='flex cursor-pointer items-center gap-0.5 py-1 text-sm text-white hover:text-gray-300'
+              >
+                Đăng nhập
+              </Link>
+            </>
+          )}
         </div>
 
         <div className='mt-2 grid grid-cols-12 items-end gap-4'>

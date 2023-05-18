@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -9,10 +10,15 @@ import { schema, Schema } from 'src/utils/rules'
 import { registerAccount } from 'src/apis/auth/auth.api'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { ErrorResponseApi } from 'src/types/utils.type'
+import { AppContext } from 'src/contexts/app.context'
+import Button from 'src/components/Button'
 
 type FormData = Schema
 
 function Register() {
+  const { setIsAuthenticated } = useContext(AppContext)
+  const navigate = useNavigate()
+
   const {
     register,
     handleSubmit,
@@ -30,8 +36,9 @@ function Register() {
     const body = _.omit(data, ['confirm_password'])
 
     registerAccountMutation.mutate(body, {
-      onSuccess: (data) => {
-        console.log(data)
+      onSuccess: () => {
+        setIsAuthenticated(true)
+        navigate('/')
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError<ErrorResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
@@ -89,12 +96,14 @@ function Register() {
               </div>
 
               <div className='mt-4'>
-                <button
+                <Button
                   type='submit'
                   className='w-full rounded bg-red-500 py-3 text-sm uppercase text-white hover:bg-red-600'
+                  isLoading={registerAccountMutation.isLoading}
+                  disabled={registerAccountMutation.isLoading}
                 >
                   Đăng ký
-                </button>
+                </Button>
               </div>
               <div className='mt-8'>
                 <div className='flex justify-center'>
