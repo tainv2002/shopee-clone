@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router-dom'
 
 import Input from 'src/components/Input'
-import { loginAccount } from 'src/apis/auth/auth.api'
+import authApi from 'src/apis/auth/auth.api'
 import { ErrorResponseApi, SuccessResponseApi } from 'src/types/utils.type'
 import { Schema, schema } from 'src/utils/rules'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
@@ -30,7 +30,7 @@ function Login() {
   })
 
   const loginAccountMutation = useMutation({
-    mutationFn: (body: FormData) => loginAccount(body)
+    mutationFn: (body: FormData) => authApi.login(body)
   })
 
   const onSubmit = handleSubmit((data) => {
