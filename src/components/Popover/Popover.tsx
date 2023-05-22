@@ -70,9 +70,7 @@ function Popover({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0 }}
                 transition={{ duration: 0.2 }}
-                style={{
-                  transformOrigin: `${middlewareData.arrow?.x}px top`
-                }}
+                style={{ transformOrigin: `${middlewareData.arrow?.x}px top` }}
               >
                 <FloatingArrow ref={arrowRef} context={context} fill='white' />
                 {renderPopover}

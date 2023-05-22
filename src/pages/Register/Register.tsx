@@ -72,6 +72,8 @@ function Register() {
                   type='email'
                   placeholder='Email'
                   className='mt-2'
+                  classNameInput='w-full rounded-sm border border-gray-300 p-3 outline-none focus:border-gray-500 focus:shadow-sm'
+                  classNameError='ml-2 mt-1 min-h-[1.25rem] text-sm text-red-600'
                   errorMessage={errors.email?.message}
                   register={register}
                 />
@@ -81,6 +83,8 @@ function Register() {
                   type='password'
                   placeholder='Password'
                   className='mt-2'
+                  classNameInput='w-full rounded-sm border border-gray-300 p-3 outline-none focus:border-gray-500 focus:shadow-sm'
+                  classNameError='ml-2 mt-1 min-h-[1.25rem] text-sm text-red-600'
                   autoComplete='on'
                   errorMessage={errors.password?.message}
                   register={register}
@@ -91,6 +95,8 @@ function Register() {
                   type='password'
                   placeholder='Confirm password'
                   className='mt-2'
+                  classNameInput='w-full rounded-sm border border-gray-300 p-3 outline-none focus:border-gray-500 focus:shadow-sm'
+                  classNameError='ml-2 mt-1 min-h-[1.25rem] text-sm text-red-600'
                   autoComplete='on'
                   errorMessage={errors.confirm_password?.message}
                   register={register}

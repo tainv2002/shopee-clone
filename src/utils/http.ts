@@ -45,13 +45,17 @@ function createHttpInstance() {
     },
     function (error: AxiosError) {
       if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
+        if (error.response?.status === HttpStatusCode.Unauthorized && error.config?.url === 'logout') {
+          access_token = ''
+          profile = null
+          clearLS()
+        }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const data: any | undefined = error.response?.data
         const message = data?.message || error.message
 
         toast.error(message)
-      }
-      return Promise.reject(error)
+      } else return Promise.reject(error)
     }
   )
 
