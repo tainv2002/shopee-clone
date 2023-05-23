@@ -1,29 +1,33 @@
 import { Link } from 'react-router-dom'
+import { Product as ProductType } from 'src/types/product.type'
+import { formatCurrency, formatNumberToSocialStyle } from 'src/utils/utils'
 
-function Product() {
+interface Props {
+  product: ProductType
+}
+
+function Product({ product }: Props) {
   return (
     <Link to='/' className=''>
       <div className='duratop-100 rounded-sm bg-white shadow transition-transform hover:translate-y-[-0.0625rem] hover:shadow-md'>
         <div className='relative w-full pt-[100%]'>
           <img
-            className='absolute bottom-0 left-0 right-0 top-0 bg-white object-cover'
-            src='https://down-vn.img.susercontent.com/file/5665f87fa443e3dbfe5b6de0f630f3c9_tn'
-            alt=''
+            className='absolute left-0 top-0 h-full  w-full bg-white object-cover'
+            src={product.image}
+            alt={product.name}
           />
         </div>
         <div className='overflow-hidden p-2'>
-          <div className='min-h-[2rem] text-xs line-clamp-2'>
-            Áo Khoác Gió Teelab Local Brand Unisex Design Studio Jacket AK046
-          </div>
+          <div className='min-h-[2rem] text-xs line-clamp-2'>{product.name}</div>
 
           <div className='mt-3 flex items-center'>
             <div className='max-w-[50%] truncate text-sm text-gray-500 line-through'>
               <span className='text-xs'>đ</span>
-              <span>2.000</span>
+              <span>{formatCurrency(product.price_before_discount)}</span>
             </div>
             <div className='ml-2 max-w-[50%] truncate text-sm text-orange'>
               <span className='text-xs'>đ</span>
-              <span>50.000</span>
+              <span>{formatCurrency(product.price)}</span>
             </div>
           </div>
 
@@ -64,7 +68,7 @@ function Product() {
             </div>
 
             <div className='ml-2 text-xs'>
-              <span>5.66k</span>
+              <span>{formatNumberToSocialStyle(product.sold)}</span>
               <span className='ml-1'>Đã bán</span>
             </div>
           </div>
