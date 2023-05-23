@@ -1,12 +1,27 @@
-import { Link } from 'react-router-dom'
+import { Link, createSearchParams } from 'react-router-dom'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
 import path from 'src/constants/path'
+import { Category } from 'src/types/category.type'
+import { QueryConfig } from '../ProductList'
+import classNames from 'classnames'
 
-function AsideFilter() {
+interface Props {
+  categories: Category[] | []
+  queryConfig: QueryConfig
+}
+
+function AsideFilter({ categories = [], queryConfig }: Props) {
+  const { category } = queryConfig
+
   return (
     <div className='py-4'>
-      <Link to={path.home} className='flex items-center font-bold'>
+      <Link
+        to={path.home}
+        className={classNames('flex items-center font-bold', {
+          'text-orange': !category
+        })}
+      >
         <svg viewBox='0 0 12 10' className='mr-3 h-4 w-3 fill-current'>
           <g fillRule='evenodd' stroke='none' strokeWidth='1'>
             <g transform='translate(-373 -208)'>
@@ -25,21 +40,30 @@ function AsideFilter() {
 
       <div className='my-4 h-[1px] bg-gray-200' />
 
-      <ul>
-        <li className='py-2 pl-2'>
-          <Link to={path.home} className='relative block px-2 text-sm font-semibold text-orange'>
-            <svg viewBox='0 0 4 7' className='absolute left-[-10px] top-1 h-2 w-2 fill-current'>
-              <polygon points='4 3.5 0 0 0 7'></polygon>
-            </svg>
-            Thời trang nam
-          </Link>
-        </li>
-        <li className='py-2 pl-2'>
-          <Link to={path.home} className='relative block px-2 text-sm'>
-            Điện thoại
-          </Link>
-        </li>
-      </ul>
+      {/* Categories list */}
+      {categories && (
+        <ul>
+          {categories.map((categoryItem) => (
+            <li key={categoryItem._id} className='py-2 pl-2'>
+              <Link
+                to={{
+                  pathname: path.home,
+                  search: createSearchParams({
+                    ...queryConfig,
+                    category: categoryItem._id
+                  }).toString()
+                }}
+                className={classNames('relative block px-2 text-sm', {
+                  'font-semibold text-orange': category === categoryItem._id,
+                  'text-black': category !== categoryItem._id
+                })}
+              >
+                {categoryItem.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <Link to={path.home} className='mt-4 flex items-center font-bold uppercase'>
         <svg
