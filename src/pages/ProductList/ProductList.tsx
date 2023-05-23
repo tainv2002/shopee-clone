@@ -5,8 +5,11 @@ import Product from './Product'
 import SortProductList from './SortProductList'
 import productApi from 'src/apis/auth/product.api'
 import useQueryParams from 'src/hooks/useQueryParams'
+import Pagination from 'src/components/Pagination'
+import { useState } from 'react'
 
 function ProductList() {
+  const [page, setPage] = useState(1)
   const queryParams = useQueryParams()
 
   const { data } = useQuery({
@@ -15,7 +18,7 @@ function ProductList() {
   })
 
   return (
-    <div className='bg-gray py-6'>
+    <div className='bg-gray-100 py-6'>
       <div className='container'>
         <div className='grid grid-cols-12 gap-6'>
           <div className='col-span-3'>
@@ -31,6 +34,7 @@ function ProductList() {
                   </div>
                 ))}
             </div>
+            <Pagination page={page} setPage={setPage} pageSize={1} />
           </div>
         </div>
       </div>
