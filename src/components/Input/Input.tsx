@@ -20,7 +20,7 @@ function Input<TFieldValues extends FieldValues>({
   rules,
   ...rest
 }: Props<TFieldValues>) {
-  const registerResult = register && name ? register(name, rules) : {}
+  const registerResult = register && name ? register(name, rules) : null
 
   return (
     <div className={className}>
