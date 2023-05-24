@@ -27,6 +27,7 @@ function SortProductList({ pageSize, queryConfig }: Props) {
         omit(
           {
             ...queryConfig,
+            page: '1',
             sort_by: sortByValue
           },
           ['order']
@@ -40,6 +41,7 @@ function SortProductList({ pageSize, queryConfig }: Props) {
       pathname: path.home,
       search: createSearchParams({
         ...queryConfig,
+        page: '1',
         sort_by: sortBy.price,
         order: orderValue
       }).toString()

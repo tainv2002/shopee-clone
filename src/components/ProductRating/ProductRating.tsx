@@ -4,7 +4,7 @@ interface Props {
 
 function ProductRating({ rating }: Props) {
   const handleWidth = (order: number) => {
-    if (order < rating) {
+    if (order <= rating) {
       return '100%'
     } else if (order > rating && order - rating < 1) {
       return Math.round((order - rating) * 100) + '%'
