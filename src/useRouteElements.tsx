@@ -9,6 +9,7 @@ import RegisterLayout from './layouts/RegisterLayout'
 import MainLayout from './layouts/MainLayout'
 import Profile from './pages/Profile'
 import { AppContext } from './contexts/app.context'
+import ProductDetail from './pages/ProductDetail'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -24,24 +25,26 @@ function useRouteElements() {
   const routeElements = useRoutes([
     {
       path: '',
-      index: true,
-      element: (
-        <MainLayout>
-          <ProductList />
-        </MainLayout>
-      )
+      element: <MainLayout />,
+      children: [
+        {
+          path: path.home,
+          element: <ProductList />
+        },
+        {
+          path: path.productDetail,
+          element: <ProductDetail />
+        }
+      ]
     },
     {
       path: '',
       element: <ProtectedRoute />,
       children: [
         {
-          path: path.profile,
-          element: (
-            <MainLayout>
-              <Profile />
-            </MainLayout>
-          )
+          path: '',
+          element: <MainLayout />,
+          children: [{ path: path.profile, element: <Profile /> }]
         }
       ]
     },
@@ -50,20 +53,12 @@ function useRouteElements() {
       element: <RejectedRoute />,
       children: [
         {
-          path: path.login,
-          element: (
-            <RegisterLayout>
-              <Login />
-            </RegisterLayout>
-          )
-        },
-        {
-          path: path.register,
-          element: (
-            <RegisterLayout>
-              <Register />
-            </RegisterLayout>
-          )
+          path: '',
+          element: <RegisterLayout />,
+          children: [
+            { path: path.login, element: <Login /> },
+            { path: path.register, element: <Register /> }
+          ]
         }
       ]
     }
