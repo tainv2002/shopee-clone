@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import productApi from 'src/apis/product.api'
 import InputNumber from 'src/components/InputNumber'
@@ -22,6 +22,7 @@ function ProductDetail() {
   const currentImages = useMemo(() => {
     return product?.images.slice(...currentIndexImages) || []
   }, [product, currentIndexImages])
+  const imageRef = useRef<HTMLImageElement | null>(null)
 
   useEffect(() => {
     if (product && product.images.length > 0) {
@@ -45,6 +46,33 @@ function ProductDetail() {
     }
   }
 
+  const handleZoom = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const rect = event.currentTarget.getBoundingClientRect()
+    const image = imageRef.current as HTMLImageElement
+    const { naturalWidth, naturalHeight } = image
+
+    // Cách 1: Lấy offsetX, offsetY đơn giản khi đã xử lý được bubble event
+    // const { offsetX, offsetY } = event.nativeEvent
+
+    // Cách 2: Lấy offsetX, offsetY khi không xử lý được bubble event
+    const offsetX = event.pageX - (rect.x + window.scrollX)
+    const offsetY = event.pageY - (rect.y + window.scrollY)
+
+    const top = offsetY * (1 - naturalHeight / rect.height)
+    const left = offsetX * (1 - naturalWidth / rect.width)
+    Object.assign(image.style, {
+      width: naturalWidth + 'px',
+      height: naturalHeight + 'px',
+      maxWidth: 'unset',
+      top: top + 'px',
+      left: left + 'px'
+    })
+  }
+
+  const handleRemoveZoom = () => {
+    imageRef.current?.removeAttribute('style')
+  }
+
   if (!product) return null
   return (
     <div className='bg-gray-200 py-6'>
@@ -52,9 +80,14 @@ function ProductDetail() {
         <div className='bg-white p-4 shadow'>
           <div className='grid grid-cols-12 gap-9'>
             <div className='col-span-5'>
-              <div className='relative w-full pt-[100%] shadow'>
+              <div
+                className='relative w-full overflow-hidden pt-[100%] shadow hover:cursor-zoom-in'
+                onMouseMove={handleZoom}
+                onMouseLeave={handleRemoveZoom}
+              >
                 <img
-                  className='absolute left-0 top-0 h-full  w-full bg-white object-cover'
+                  ref={imageRef}
+                  className='absolute left-0 top-0  h-full w-full bg-white object-cover'
                   src={activeImage}
                   alt={product.name}
                 />
