@@ -1,9 +1,9 @@
 import classNames from 'classnames'
 import { sortBy, order as orderConstant } from 'src/constants/products'
-import { QueryConfig } from '../../ProductList'
 import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import path from 'src/constants/path'
 import { omit } from 'lodash'
+import { QueryConfig } from 'src/hooks/useQueryConfig'
 
 interface Props {
   queryConfig: QueryConfig
@@ -88,7 +88,6 @@ function SortProductList({ pageSize, queryConfig }: Props) {
               'bg-white text-black hover:bg-slate-100': !isActiveSortBy(sortBy.price)
             })}
             value={order || ''}
-            // onClick={() => handleSort(sortBy.price)}
             onChange={(e) => handlePriceOrder(e.target.value as keyof typeof orderConstant)}
           >
             <option value='' disabled className='bg-zinc-400 text-left text-black'>

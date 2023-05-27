@@ -1,14 +1,28 @@
 import { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 
 import Popover from '../Popover'
 import authApi from 'src/apis/auth.api'
 import { AppContext } from 'src/contexts/app.context'
 import path from 'src/constants/path'
+import useQueryConfig from 'src/hooks/useQueryConfig'
+import { Schema, schema } from 'src/utils/rules'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { omit } from 'lodash'
+
+type FormData = Pick<Schema, 'name'>
+const nameSchema = schema.pick(['name'])
 
 function Header() {
+  const queryConfig = useQueryConfig()
+  const navigate = useNavigate()
   const { isAuthenticated, setIsAuthenticated, profile, setProfile } = useContext(AppContext)
+  const { handleSubmit, register } = useForm<FormData>({
+    defaultValues: { name: '' },
+    resolver: yupResolver(nameSchema)
+  })
 
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
@@ -21,6 +35,17 @@ function Header() {
   const handleLogout = () => {
     logoutMutation.mutate()
   }
+
+  const onSearchSubmit = handleSubmit((data) => {
+    const config = queryConfig.order
+      ? omit({ ...queryConfig, name: data.name }, ['order', 'sort_by'])
+      : { ...queryConfig, name: data.name }
+
+    navigate({
+      pathname: path.home,
+      search: createSearchParams(config).toString()
+    })
+  })
 
   return (
     <header className='bg-[linear-gradient(-180deg,#f53d2d,#f63)] pb-5 pt-1'>
@@ -137,12 +162,14 @@ function Header() {
             </svg>
           </Link>
 
-          <form className='col-span-9'>
+          {/* Search form */}
+          <form className='col-span-9' onSubmit={onSearchSubmit}>
             <div className='flex justify-between gap-1 rounded-sm bg-white p-1'>
               <input
                 type='text'
                 className='flex-grow border-none bg-transparent px-2 py-1 text-sm text-black outline-none'
                 placeholder='Tìm kiếm sản phẩm...'
+                {...register('name')}
               />
 
               <button type='submit' className='flex-shrink-0 rounded-sm bg-orange px-5 py-2 text-white'>
