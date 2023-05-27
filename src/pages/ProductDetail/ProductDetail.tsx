@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import DOMPurify from 'dompurify'
+import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import productApi from 'src/apis/product.api'
 import InputNumber from 'src/components/InputNumber'
 import ProductRating from 'src/components/ProductRating'
+import { Product } from 'src/types/product.type'
 import { formatCurrency, formatNumberToSocialStyle, rateSale } from 'src/utils/utils'
 
 function ProductDetail() {
@@ -13,21 +15,47 @@ function ProductDetail() {
     queryFn: () => productApi.getProductDetail(id as string),
     keepPreviousData: true
   })
-  const product = productDetailData?.data.data
 
-  console.log(product)
+  const [currentIndexImages, setCurrentIndexImages] = useState([0, 5])
+  const [activeImage, setActiveImage] = useState('')
+  const product = productDetailData?.data.data
+  const currentImages = useMemo(() => {
+    return product?.images.slice(...currentIndexImages) || []
+  }, [product, currentIndexImages])
+
+  useEffect(() => {
+    if (product && product.images.length > 0) {
+      setActiveImage(product.images[0])
+    }
+  }, [product])
+
+  const chooseActive = (img: string) => {
+    setActiveImage(img)
+  }
+
+  const nextSlides = () => {
+    if (currentIndexImages[1] < (product as Product).images.length) {
+      setCurrentIndexImages((prev) => [prev[0] + 1, prev[1] + 1])
+    }
+  }
+
+  const prevSlides = () => {
+    if (currentIndexImages[0] > 0) {
+      setCurrentIndexImages((prev) => [prev[0] - 1, prev[1] - 1])
+    }
+  }
 
   if (!product) return null
   return (
     <div className='bg-gray-200 py-6'>
-      <div className='bg-white p-4 shadow'>
-        <div className='container'>
+      <div className='container'>
+        <div className='bg-white p-4 shadow'>
           <div className='grid grid-cols-12 gap-9'>
             <div className='col-span-5'>
               <div className='relative w-full pt-[100%] shadow'>
                 <img
                   className='absolute left-0 top-0 h-full  w-full bg-white object-cover'
-                  src={product.image}
+                  src={activeImage}
                   alt={product.name}
                 />
               </div>
@@ -35,7 +63,10 @@ function ProductDetail() {
               {/* Slider image */}
               <div className='relative mt-4 grid grid-cols-5 gap-1'>
                 {/* Prev button */}
-                <button className='absolute left-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white'>
+                <button
+                  className='absolute left-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white'
+                  onClick={prevSlides}
+                >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -49,23 +80,30 @@ function ProductDetail() {
                 </button>
 
                 {/* Slides */}
-                {product.images.slice(0, 5).map((image, index) => {
-                  const isActive = index === 0
+                {currentImages.map((image) => {
+                  const isActive = image === activeImage
                   return (
-                    <div key={image} className='relative w-full pt-[100%]'>
+                    <div
+                      key={image}
+                      className='relative w-full cursor-pointer pt-[100%]'
+                      onMouseEnter={() => chooseActive(image)}
+                    >
                       <img
                         src={image}
-                        alt=''
+                        alt={product.name}
                         className='absolute left-0 top-0 h-full  w-full cursor-pointer bg-white object-cover'
                       />
 
-                      {isActive && <div className='absolute left-0 top-0 z-10 h-full w-full border-2 border-orange' />}
+                      {isActive && <div className='absolute inset-0 border-2 border-orange' />}
                     </div>
                   )
                 })}
 
                 {/* Next button */}
-                <button className='absolute right-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white'>
+                <button
+                  className='absolute right-0 top-1/2 z-10 h-9 w-5 -translate-y-1/2 bg-black/20 text-white'
+                  onClick={nextSlides}
+                >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -206,8 +244,8 @@ function ProductDetail() {
       </div>
 
       {/* Detail product description */}
-      <div className='mt-8 bg-white p-4 shadow'>
-        <div className='container'>
+      <div className='container'>
+        <div className='mt-8 bg-white p-4 shadow'>
           <div className='rounded bg-gray-50 p-4 text-lg capitalize text-slate-700'>Mô tả sản phẩm</div>
           <div className='mx-4 mb-4 mt-12 text-sm leading-loose'>
             <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }}></div>
