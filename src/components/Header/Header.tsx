@@ -1,7 +1,8 @@
+import { omit } from 'lodash'
 import { useContext } from 'react'
-import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 
 import Popover from '../Popover'
 import authApi from 'src/apis/auth.api'
@@ -10,10 +11,14 @@ import path from 'src/constants/path'
 import useQueryConfig from 'src/hooks/useQueryConfig'
 import { Schema, schema } from 'src/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { omit } from 'lodash'
+import { purchasesStatus } from 'src/constants/purchase'
+import purchaseApi from 'src/apis/purchase.api'
+import { formatCurrency } from 'src/utils/utils'
+import noProduct from 'src/assets/images/no-product.png'
 
 type FormData = Pick<Schema, 'name'>
 const nameSchema = schema.pick(['name'])
+const MAX_PURCHASES_IN_CART = 5
 
 function Header() {
   const queryConfig = useQueryConfig()
@@ -31,6 +36,13 @@ function Header() {
       setProfile(null)
     }
   })
+
+  const { data: purchaseInCartData } = useQuery({
+    queryKey: ['purchases', { status: purchasesStatus.inCart }],
+    queryFn: () => purchaseApi.getPurchasesList({ status: purchasesStatus.inCart })
+  })
+
+  const purchases = purchaseInCartData?.data.data
 
   const handleLogout = () => {
     logoutMutation.mutate()
@@ -197,76 +209,53 @@ function Header() {
                 className='px-4'
                 renderPopover={
                   <div className='w-[400px] rounded-sm bg-white shadow-md'>
-                    <div className='p-2.5 text-sm font-medium capitalize text-gray-400'>Sản phẩm mới thêm</div>
+                    {purchases && (
+                      <>
+                        <div className='p-2.5 text-sm font-medium capitalize text-gray-400'>Sản phẩm mới thêm</div>
+                        <div className='flex flex-col'>
+                          {purchases.slice(0, MAX_PURCHASES_IN_CART).map((purchase) => (
+                            <div
+                              key={purchase._id}
+                              className='flex cursor-pointer justify-start gap-2.5 p-2 hover:bg-slate-100'
+                            >
+                              <div className='h-10 w-10 shrink-0'>
+                                <img
+                                  src={purchase.product.image}
+                                  alt={purchase.product.name}
+                                  className='w-full object-cover'
+                                />
+                              </div>
+                              <div className='mr-3 truncate text-sm text-black'>{purchase.product.name}</div>
+                              <div className='ml-auto text-sm text-red-500'>
+                                ₫{formatCurrency(purchase.product.price)}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
 
-                    <div className='flex flex-col'>
-                      <div className='5 flex cursor-pointer justify-start gap-2.5 p-2 hover:bg-slate-100'>
-                        <div className='h-10 w-10 shrink-0'>
-                          <img
-                            src='https://down-vn.img.susercontent.com/file/sg-11134201-22090-mzdzxahjyuhvd5_tn'
-                            alt='Cart'
-                            className='w-full object-cover'
-                          />
-                        </div>
-                        <div className='truncate text-sm text-black'>
-                          Áo Khoác Gió Teelab Local Brand Unisex Sporty A/W 2022 Jacket AK048
-                        </div>
-                        <div className='ml-auto text-sm text-red-500'>₫299.000</div>
-                      </div>
+                        <div className='p-2.5'>
+                          <div className='flex items-center justify-between'>
+                            <div className='text-sm capitalize'>
+                              {purchases.length > MAX_PURCHASES_IN_CART &&
+                                purchases.length - MAX_PURCHASES_IN_CART + ' Thêm hàng vào giỏ'}
+                            </div>
 
-                      <div className='5 flex cursor-pointer justify-start gap-2.5 p-2 hover:bg-slate-100'>
-                        <div className='h-10 w-10 shrink-0'>
-                          <img
-                            src='https://down-vn.img.susercontent.com/file/sg-11134201-22090-mzdzxahjyuhvd5_tn'
-                            alt='Cart'
-                            className='w-full object-cover'
-                          />
+                            <Link
+                              to={path.home}
+                              className='inline-block rounded-sm bg-orange px-[10px] py-1.5 text-sm capitalize text-white hover:bg-opacity-80'
+                            >
+                              Xem giỏ hàng
+                            </Link>
+                          </div>
                         </div>
-                        <div className='truncate text-sm text-black'>
-                          Áo Khoác Gió Teelab Local Brand Unisex Sporty A/W 2022 Jacket AK048
-                        </div>
-                        <div className='ml-auto text-sm text-red-500'>₫299.000</div>
-                      </div>
+                      </>
+                    )}
 
-                      <div className='5 flex cursor-pointer justify-start gap-2.5 p-2 hover:bg-slate-100'>
-                        <div className='h-10 w-10 shrink-0'>
-                          <img
-                            src='https://down-vn.img.susercontent.com/file/sg-11134201-22090-mzdzxahjyuhvd5_tn'
-                            alt='Cart'
-                            className='w-full object-cover'
-                          />
-                        </div>
-                        <div className='truncate text-sm text-black'>
-                          Áo Khoác Gió Teelab Local Brand Unisex Sporty A/W 2022 Jacket AK048
-                        </div>
-                        <div className='ml-auto text-sm text-red-500'>₫299.000</div>
+                    {!purchases && (
+                      <div className='mx-auto w-[100px] py-20'>
+                        <img src={noProduct} alt='no products' className='h-full w-full object-cover' />
                       </div>
-
-                      <div className='5 flex cursor-pointer justify-start gap-2.5 p-2 hover:bg-slate-100'>
-                        <div className='h-10 w-10 shrink-0'>
-                          <img
-                            src='https://down-vn.img.susercontent.com/file/sg-11134201-22090-mzdzxahjyuhvd5_tn'
-                            alt='Cart'
-                            className='w-full object-cover'
-                          />
-                        </div>
-                        <div className='truncate text-sm text-black'>
-                          Áo Khoác Gió Teelab Local Brand Unisex Sporty A/W 2022 Jacket AK048
-                        </div>
-                        <div className='ml-auto text-sm text-red-500'>₫299.000</div>
-                      </div>
-                    </div>
-
-                    <div className='p-2.5'>
-                      <div className='flex justify-end'>
-                        <Link
-                          to={path.home}
-                          className='inline-block rounded-sm bg-orange px-[10px] py-1.5 text-sm capitalize text-white hover:bg-opacity-80'
-                        >
-                          Xem giỏ hàng
-                        </Link>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 }
               >
@@ -286,8 +275,8 @@ function Header() {
                     />
                   </svg>
 
-                  <span className='absolute right-[-8px] top-[-8px] h-4 w-5 rounded-full bg-white text-center text-sm leading-4 text-gray-500 shadow-md'>
-                    3
+                  <span className='absolute right-[-10px] top-[-10px] min-w-[20px] rounded-full bg-white px-1 py-0.5 text-center text-xs text-gray-500 shadow-md'>
+                    {purchases?.length}
                   </span>
                 </Link>
               </Popover>
