@@ -68,7 +68,7 @@ function Register() {
             <form className='mx-5 rounded bg-white p-10 shadow-sm' onSubmit={onSubmit} noValidate>
               <div className='text-2xl'>Đăng ký</div>
               <div className='mt-8'>
-                <Input<FormData>
+                <Input
                   name='email'
                   type='email'
                   placeholder='Email'
@@ -79,7 +79,7 @@ function Register() {
                   register={register}
                 />
 
-                <Input<FormData>
+                <Input
                   name='password'
                   type='password'
                   placeholder='Password'
@@ -91,7 +91,7 @@ function Register() {
                   register={register}
                 />
 
-                <Input<FormData>
+                <Input
                   name='confirm_password'
                   type='password'
                   placeholder='Confirm password'
