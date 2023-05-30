@@ -275,7 +275,7 @@ function Header() {
                     />
                   </svg>
 
-                  <span className='absolute right-[-10px] top-[-10px] min-w-[20px] rounded-full bg-white px-1 py-0.5 text-center text-xs text-gray-500 shadow-md'>
+                  <span className='absolute right-[-10px] top-[-10px] flex min-w-[20px] items-center justify-center rounded-full bg-white px-1 py-0.5 text-center text-xs text-gray-500 shadow-md'>
                     {purchases?.length}
                   </span>
                 </Link>

@@ -30,7 +30,6 @@ function AsideFilter({ categories = [], queryConfig }: Props) {
   const {
     control,
     handleSubmit,
-    watch,
     trigger,
     setValue,
     formState: { errors }
