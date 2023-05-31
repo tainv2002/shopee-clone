@@ -1,7 +1,7 @@
 import { omit } from 'lodash'
 import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 
 import Popover from '../Popover'
@@ -21,6 +21,7 @@ const nameSchema = schema.pick(['name'])
 const MAX_PURCHASES_IN_CART = 5
 
 function Header() {
+  const queryClient = useQueryClient()
   const queryConfig = useQueryConfig()
   const navigate = useNavigate()
   const { isAuthenticated, setIsAuthenticated, profile, setProfile } = useContext(AppContext)
@@ -34,15 +35,18 @@ function Header() {
     onSuccess: () => {
       setIsAuthenticated(false)
       setProfile(null)
+      queryClient.removeQueries({
+        queryKey: ['purchases', { status: purchasesStatus.inCart }]
+      })
     }
   })
 
   const { data: purchaseInCartData } = useQuery({
     queryKey: ['purchases', { status: purchasesStatus.inCart }],
-    queryFn: () => purchaseApi.getPurchasesList({ status: purchasesStatus.inCart })
+    queryFn: () => purchaseApi.getPurchasesList({ status: purchasesStatus.inCart }),
+    enabled: isAuthenticated
   })
-
-  const purchases = purchaseInCartData?.data.data
+  const purchasesInCart = purchaseInCartData?.data.data
 
   const handleLogout = () => {
     logoutMutation.mutate()
@@ -209,11 +213,11 @@ function Header() {
                 className='px-4'
                 renderPopover={
                   <div className='w-[400px] rounded-sm bg-white shadow-md'>
-                    {purchases && (
+                    {purchasesInCart && (
                       <>
                         <div className='p-2.5 text-sm font-medium capitalize text-gray-400'>Sản phẩm mới thêm</div>
                         <div className='flex flex-col'>
-                          {purchases.slice(0, MAX_PURCHASES_IN_CART).map((purchase) => (
+                          {purchasesInCart.slice(0, MAX_PURCHASES_IN_CART).map((purchase) => (
                             <div
                               key={purchase._id}
                               className='flex cursor-pointer justify-start gap-2.5 p-2 hover:bg-slate-100'
@@ -236,12 +240,12 @@ function Header() {
                         <div className='p-2.5'>
                           <div className='flex items-center justify-between'>
                             <div className='text-sm capitalize'>
-                              {purchases.length > MAX_PURCHASES_IN_CART &&
-                                purchases.length - MAX_PURCHASES_IN_CART + ' Thêm hàng vào giỏ'}
+                              {purchasesInCart.length > MAX_PURCHASES_IN_CART &&
+                                purchasesInCart.length - MAX_PURCHASES_IN_CART + ' Thêm hàng vào giỏ'}
                             </div>
 
                             <Link
-                              to={path.home}
+                              to={path.cart}
                               className='inline-block rounded-sm bg-orange px-[10px] py-1.5 text-sm capitalize text-white hover:bg-opacity-80'
                             >
                               Xem giỏ hàng
@@ -251,15 +255,16 @@ function Header() {
                       </>
                     )}
 
-                    {!purchases && (
-                      <div className='mx-auto w-[100px] py-20'>
-                        <img src={noProduct} alt='no products' className='h-full w-full object-cover' />
+                    {!purchasesInCart && (
+                      <div className='flex flex-col items-center justify-center gap-1 py-20'>
+                        <img src={noProduct} alt='no products' className='w-[100px] object-cover' />
+                        <p className='text-md font-medium'>Chưa có sản phẩm</p>
                       </div>
                     )}
                   </div>
                 }
               >
-                <Link to={path.home} className='relative text-white'>
+                <Link to={path.cart} className='relative text-white'>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -275,9 +280,11 @@ function Header() {
                     />
                   </svg>
 
-                  <span className='absolute right-[-10px] top-[-10px] flex min-w-[20px] items-center justify-center rounded-full bg-white px-1 py-0.5 text-center text-xs text-gray-500 shadow-md'>
-                    {purchases?.length}
-                  </span>
+                  {purchasesInCart && (
+                    <span className='absolute right-[-10px] top-[-10px] flex min-w-[20px] items-center justify-center rounded-full bg-white px-1 py-0.5 text-center text-xs text-gray-500 shadow-md'>
+                      {purchasesInCart.length}
+                    </span>
+                  )}
                 </Link>
               </Popover>
             </div>

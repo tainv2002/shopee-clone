@@ -1,7 +1,7 @@
 import DOMPurify from 'dompurify'
 import { toast } from 'react-toastify'
-import { useParams } from 'react-router-dom'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import productApi from 'src/apis/product.api'
@@ -12,8 +12,12 @@ import Product from '../ProductList/components/Product'
 import QuantityController from 'src/components/QuantityController'
 import purchaseApi from 'src/apis/purchase.api'
 import { purchasesStatus } from 'src/constants/purchase'
+import { AppContext } from 'src/contexts/app.context'
+import path from 'src/constants/path'
 
 function ProductDetail() {
+  const { isAuthenticated } = useContext(AppContext)
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [buyCount, setBuyCount] = useState(1)
   const imageRef = useRef<HTMLImageElement | null>(null)
@@ -98,20 +102,24 @@ function ProductDetail() {
   }
 
   const addToCart = () => {
-    addToCartMutation.mutate(
-      {
-        product_id: product?._id as string,
-        buy_count: buyCount
-      },
-      {
-        onSuccess: (data) => {
-          toast.success(data.data.message, { autoClose: 3000 })
-          queryClient.invalidateQueries({
-            queryKey: ['purchases', { status: purchasesStatus.inCart }]
-          })
+    if (isAuthenticated) {
+      addToCartMutation.mutate(
+        {
+          product_id: product?._id as string,
+          buy_count: buyCount
+        },
+        {
+          onSuccess: (data) => {
+            toast.success(data.data.message, { autoClose: 3000 })
+            queryClient.invalidateQueries({
+              queryKey: ['purchases', { status: purchasesStatus.inCart }]
+            })
+          }
         }
-      }
-    )
+      )
+    } else {
+      navigate(path.login)
+    }
   }
 
   if (!product) return null
