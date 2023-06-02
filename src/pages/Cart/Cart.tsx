@@ -3,6 +3,7 @@ import { produce } from 'immer'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 import purchaseApi from 'src/apis/purchase.api'
 import Button from 'src/components/Button'
@@ -35,8 +36,41 @@ function Cart() {
     }
   })
 
+  const deletePurchasesMutation = useMutation({
+    mutationFn: purchaseApi.deletePurchases,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['purchases', { status: purchasesStatus.inCart }]
+      })
+    }
+  })
+
+  const buyProductsMutation = useMutation({
+    mutationFn: purchaseApi.buyProducts,
+    onSuccess: (data) => {
+      toast.success(data.data.message, {
+        position: 'top-center',
+        autoClose: 1000
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['purchases', { status: purchasesStatus.inCart }]
+      })
+    }
+  })
+
   const purchasesInCart = purchaseInCartData?.data.data
   const isAllChecked = extendedPuschases.every((purchase) => purchase.checked === true)
+  const checkedPurchases = extendedPuschases.filter((purchase) => purchase.checked === true)
+  const checkedPurchasesCount = checkedPurchases.length
+  const total = checkedPurchases.reduce(
+    (result, current) => {
+      const price = result.price + current.buy_count * current.product.price
+      const discount =
+        result.discount + current.buy_count * (current.product.price_before_discount - current.product.price)
+      return { price, discount }
+    },
+    { price: 0, discount: 0 }
+  )
 
   useEffect(() => {
     if (purchasesInCart) {
@@ -85,6 +119,26 @@ function Cart() {
     )
   }
 
+  const handleDelete = (purchaseId: string) => {
+    deletePurchasesMutation.mutate([purchaseId])
+  }
+
+  const handleDeleteManyPurchases = () => {
+    const purchaseIds = checkedPurchases.map((purchase) => purchase._id)
+    if (purchaseIds.length > 0) deletePurchasesMutation.mutate(purchaseIds)
+  }
+
+  const handleBuyPurchases = () => {
+    if (checkedPurchasesCount > 0) {
+      const body = checkedPurchases.map((purchase) => ({
+        product_id: purchase.product._id,
+        buy_count: purchase.buy_count
+      }))
+
+      buyProductsMutation.mutate(body)
+    }
+  }
+
   return (
     <div className='bg-neutral-100 py-16'>
       <div className='container'>
@@ -121,7 +175,7 @@ function Cart() {
               {extendedPuschases?.map((purchase, index) => (
                 <div
                   key={purchase._id}
-                  className='my-3 grid grid-cols-12 rounded-sm border border-gray-200 bg-white px-4 py-5 text-center text-sm text-gray-500'
+                  className='my-3 grid grid-cols-12 items-center rounded-sm border border-gray-200 bg-white px-4 py-5 text-center text-sm text-gray-500'
                 >
                   <div className='col-span-6'>
                     <div className='flex'>
@@ -134,7 +188,7 @@ function Cart() {
                         />
                       </div>
                       <div className='grow'>
-                        <div className='flex'>
+                        <div className='flex items-center'>
                           <Link
                             className='h-20 w-20 shrink-0'
                             to={`${path.home}${generateNameId({
@@ -147,7 +201,7 @@ function Cart() {
 
                           <div className='grow px-2 pb-2 pt-1'>
                             <Link
-                              className='line-clamp-2'
+                              className='line-clamp-2 text-left'
                               to={`${path.home}${generateNameId({
                                 name: purchase.product.name,
                                 id: purchase.product._id
@@ -187,7 +241,12 @@ function Cart() {
                         <span className='text-orange'>đ{formatCurrency(purchase.price * purchase.buy_count)}</span>
                       </div>
                       <div className='col-span-1'>
-                        <button className='bg-transparent text-black transition-colors hover:text-orange'>Xóa</button>
+                        <button
+                          className='bg-transparent text-black transition-colors hover:text-orange'
+                          onClick={() => handleDelete(purchase._id)}
+                        >
+                          Xóa
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -208,21 +267,27 @@ function Cart() {
               />
             </div>
             <button className='mx-3 border-none bg-transparent'>Chọn tất cả ({extendedPuschases.length})</button>
-            <button className='mx-3 border-none bg-transparent'>Xóa</button>
+            <button className='mx-3 border-none bg-transparent' onClick={handleDeleteManyPurchases}>
+              Xóa
+            </button>
           </div>
           <div className='mt-5 flex w-full flex-col items-start sm:ml-auto sm:mt-0 sm:items-end'>
             <div>
               <div className='flex items-center justify-end'>
-                <div>Tổng thanh toán (0 sản phẩm)</div>
-                <div className='ml-2 text-2xl text-orange'>đ{formatCurrency(138000)}</div>
+                <div>Tổng thanh toán ({checkedPurchasesCount} sản phẩm)</div>
+                <div className='ml-2 text-2xl text-orange'>đ{formatCurrency(total.price)}</div>
               </div>
               <div className='flex items-center justify-end text-sm'>
                 <div className='text-gray-500'>Tiết kiệm</div>
-                <div className='ml-6'>đ{formatCurrency(138000)}</div>
+                <div className='ml-6'>đ{formatCurrency(total.discount)}</div>
               </div>
             </div>
 
-            <Button className='mt-5 h-10 w-52 rounded bg-red-500 px-4 py-3 text-sm uppercase text-white hover:bg-red-600 sm:ml-4 sm:mt-0'>
+            <Button
+              className='mt-5 h-10 w-52 rounded bg-red-500 px-4 py-3 text-sm uppercase text-white hover:bg-red-600 sm:ml-4 sm:mt-0'
+              onClick={handleBuyPurchases}
+              disabled={buyProductsMutation.isLoading}
+            >
               Mua hàng
             </Button>
           </div>
