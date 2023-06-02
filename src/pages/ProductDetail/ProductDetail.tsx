@@ -122,6 +122,22 @@ function ProductDetail() {
     }
   }
 
+  const buyNow = async () => {
+    if (isAuthenticated) {
+      const res = await addToCartMutation.mutateAsync({
+        product_id: product?._id as string,
+        buy_count: buyCount
+      })
+
+      const purchase = res.data.data
+      navigate(path.home + path.cart, {
+        state: { purchaseId: purchase._id }
+      })
+    } else {
+      navigate(path.login)
+    }
+  }
+
   if (!product) return null
   return (
     <div className='bg-gray-200 py-6'>
@@ -292,7 +308,10 @@ function ProductDetail() {
                   Thêm vào giỏ hàng
                 </button>
 
-                <button className='ml-4 flex h-12 min-w-[5rem] items-center justify-center rounded-sm bg-orange px-5 capitalize text-white shadow-sm outline-none transition-colors hover:bg-orange/90'>
+                <button
+                  onClick={buyNow}
+                  className='ml-4 flex h-12 min-w-[5rem] items-center justify-center rounded-sm bg-orange px-5 capitalize text-white shadow-sm outline-none transition-colors hover:bg-orange/90'
+                >
                   Mua ngay
                 </button>
               </div>

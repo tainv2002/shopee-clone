@@ -1,15 +1,10 @@
-import { omit } from 'lodash'
 import { useContext } from 'react'
-import { useForm } from 'react-hook-form'
 import { useQuery } from '@tanstack/react-query'
-import { Link, createSearchParams, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import Popover from '../Popover'
 import { AppContext } from 'src/contexts/app.context'
 import path from 'src/constants/path'
-import useQueryConfig from 'src/hooks/useQueryConfig'
-import { Schema, schema } from 'src/utils/rules'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { purchasesStatus } from 'src/constants/purchase'
 import purchaseApi from 'src/apis/purchase.api'
 import { formatCurrency } from 'src/utils/utils'
@@ -17,8 +12,6 @@ import noProduct from 'src/assets/images/no-product.png'
 import NavHeader from '../NavHeader'
 import useSearchProducts from 'src/hooks/useSearchProducts'
 
-type FormData = Pick<Schema, 'name'>
-const nameSchema = schema.pick(['name'])
 const MAX_PURCHASES_IN_CART = 5
 
 function Header() {
@@ -81,8 +74,8 @@ function Header() {
                 className='px-4'
                 renderPopover={
                   <div className='w-[400px] rounded-sm bg-white shadow-md'>
-                    {purchasesInCart && (
-                      <>
+                    {purchasesInCart && purchasesInCart.length > 0 ? (
+                      <div>
                         <div className='p-2.5 text-sm font-medium capitalize text-gray-400'>Sản phẩm mới thêm</div>
                         <div className='flex flex-col'>
                           {purchasesInCart.slice(0, MAX_PURCHASES_IN_CART).map((purchase) => (
@@ -120,10 +113,8 @@ function Header() {
                             </Link>
                           </div>
                         </div>
-                      </>
-                    )}
-
-                    {!purchasesInCart && (
+                      </div>
+                    ) : (
                       <div className='flex flex-col items-center justify-center gap-1 py-20'>
                         <img src={noProduct} alt='no products' className='w-[100px] object-cover' />
                         <p className='text-md font-medium'>Chưa có sản phẩm</p>
@@ -148,7 +139,7 @@ function Header() {
                     />
                   </svg>
 
-                  {purchasesInCart && (
+                  {purchasesInCart && purchasesInCart.length > 0 && (
                     <span className='absolute right-[-10px] top-[-10px] flex min-w-[20px] items-center justify-center rounded-full bg-white px-1 py-0.5 text-center text-xs text-gray-500 shadow-md'>
                       {purchasesInCart.length}
                     </span>
