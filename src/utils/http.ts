@@ -45,7 +45,7 @@ function createHttpInstance() {
     },
     function (error: AxiosError) {
       if (error.response?.status !== HttpStatusCode.UnprocessableEntity) {
-        if (error.response?.status === HttpStatusCode.Unauthorized && error.config?.url === 'logout') {
+        if (error.response?.status === HttpStatusCode.Unauthorized) {
           access_token = ''
           profile = null
           clearLS()
