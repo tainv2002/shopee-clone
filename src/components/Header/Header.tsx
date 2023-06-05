@@ -7,7 +7,7 @@ import { AppContext } from 'src/contexts/app.context'
 import path from 'src/constants/path'
 import { purchasesStatus } from 'src/constants/purchase'
 import purchaseApi from 'src/apis/purchase.api'
-import { formatCurrency } from 'src/utils/utils'
+import { formatCurrency, generateNameId } from 'src/utils/utils'
 import noProduct from 'src/assets/images/no-product.png'
 import NavHeader from '../NavHeader'
 import useSearchProducts from 'src/hooks/useSearchProducts'
@@ -79,8 +79,12 @@ function Header() {
                         <div className='p-2.5 text-sm font-medium capitalize text-gray-400'>Sản phẩm mới thêm</div>
                         <div className='flex flex-col'>
                           {purchasesInCart.slice(0, MAX_PURCHASES_IN_CART).map((purchase) => (
-                            <div
+                            <Link
                               key={purchase._id}
+                              to={`${path.home}${generateNameId({
+                                name: purchase.product.name,
+                                id: purchase.product._id
+                              })}`}
                               className='flex cursor-pointer justify-start gap-2.5 p-2 hover:bg-slate-100'
                             >
                               <div className='h-10 w-10 shrink-0'>
@@ -94,7 +98,7 @@ function Header() {
                               <div className='ml-auto text-sm text-red-500'>
                                 ₫{formatCurrency(purchase.product.price)}
                               </div>
-                            </div>
+                            </Link>
                           ))}
                         </div>
 
