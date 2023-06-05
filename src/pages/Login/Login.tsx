@@ -66,7 +66,7 @@ function Login() {
               <div className='text-2xl'>Đăng nhập</div>
 
               <div className='mt-8'>
-                <Input<FormData>
+                <Input
                   name='email'
                   type='email'
                   placeholder='Email'
@@ -78,7 +78,7 @@ function Login() {
                   register={register}
                 />
 
-                <Input<FormData>
+                <Input
                   name='password'
                   type='password'
                   placeholder='Password'
