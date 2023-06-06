@@ -20,7 +20,7 @@ function Cart() {
 
   const { data: purchaseInCartData } = useQuery({
     queryKey: ['purchases', { status: purchasesStatus.inCart }],
-    queryFn: () => purchaseApi.getPurchasesList({ status: purchasesStatus.inCart })
+    queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart })
   })
 
   const updatePurchaseMutation = useMutation({

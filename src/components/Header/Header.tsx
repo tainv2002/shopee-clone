@@ -20,7 +20,7 @@ function Header() {
 
   const { data: purchaseInCartData } = useQuery({
     queryKey: ['purchases', { status: purchasesStatus.inCart }],
-    queryFn: () => purchaseApi.getPurchasesList({ status: purchasesStatus.inCart }),
+    queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart }),
     enabled: isAuthenticated
   })
   const purchasesInCart = purchaseInCartData?.data.data
