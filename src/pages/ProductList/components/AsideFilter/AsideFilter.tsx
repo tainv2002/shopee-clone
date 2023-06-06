@@ -57,7 +57,7 @@ function AsideFilter({ categories = [], queryConfig }: Props) {
     },
     (err) => {
       if (err.price_max?.ref?.focus) {
-        err.price_max?.ref?.focus()
+        err.price_max.ref.focus()
       }
     }
   )

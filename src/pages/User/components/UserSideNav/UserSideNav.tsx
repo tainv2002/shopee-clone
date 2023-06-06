@@ -65,12 +65,12 @@ function UserSideNav() {
         >
           <div className='mr-3 h-[18px] w-[18px]'>
             <img
-              src='https://down-vn.img.susercontent.com/file/f0049e9df4e536bc3e7f140d071e9078'
+              src='https://down-vn.img.susercontent.com/file/ba61750a46794d8847c3f463c5e71cc4'
               alt=''
               className='relative top-[-1px] h-full w-full object-cover'
             />
           </div>
-          Đơn mua
+          Đổi mật khẩu
         </NavLink>
 
         <NavLink
@@ -84,12 +84,12 @@ function UserSideNav() {
         >
           <div className='mr-3 h-[18px] w-[18px]'>
             <img
-              src='https://down-vn.img.susercontent.com/file/ba61750a46794d8847c3f463c5e71cc4'
+              src='https://down-vn.img.susercontent.com/file/f0049e9df4e536bc3e7f140d071e9078'
               alt=''
               className='relative top-[-1px] h-full w-full object-cover'
             />
           </div>
-          Đổi mật khẩu
+          Đơn mua
         </NavLink>
       </div>
     </div>
