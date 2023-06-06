@@ -37,3 +37,8 @@ export const getIdFromNameId = (nameId: string) => {
 
   return arr[arr.length - 1]
 }
+
+export const getAvatarUrl = (avatarName: string) => {
+  const baseUrl = import.meta.env.VITE_BASE_URL
+  return `${baseUrl}images/${avatarName}`
+}

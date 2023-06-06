@@ -56,7 +56,7 @@ export const userSchema = yup.object({
   confirm_password: schema.fields['confirm_password']
 })
 
-export type USerSchema = yup.InferType<typeof userSchema>
+export type UserSchema = yup.InferType<typeof userSchema>
 
 // type FormInputs = {
 //   email: string

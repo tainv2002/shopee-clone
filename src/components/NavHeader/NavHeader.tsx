@@ -7,10 +7,11 @@ import authApi from 'src/apis/auth.api'
 import { AppContext } from 'src/contexts/app.context'
 import path from 'src/constants/path'
 import { purchasesStatus } from 'src/constants/purchase'
+import userImage from 'src/assets/images/user.svg'
+import { getAvatarUrl } from 'src/utils/utils'
 
 function NavHeader() {
   const queryClient = useQueryClient()
-
   const { isAuthenticated, setIsAuthenticated, profile, setProfile } = useContext(AppContext)
 
   const logoutMutation = useMutation({
@@ -104,8 +105,8 @@ function NavHeader() {
         >
           <div className='h-5 w-5 flex-shrink-0'>
             <img
-              className='h-full w-full rounded-full object-cover'
-              src='https://down-vn.img.susercontent.com/file/e1fcc56b8b7805ecfab1fb82b10c008c_tn'
+              className='h-full w-full rounded-full object-cover text-white'
+              src={profile?.avatar ? getAvatarUrl(profile.avatar) : userImage}
               alt=''
             />
           </div>
