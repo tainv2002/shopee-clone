@@ -15,7 +15,7 @@ import { setProfileToLS } from 'src/utils/auth'
 import userImage from 'src/assets/images/user.svg'
 import { getAvatarUrl, isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { ErrorResponseApi } from 'src/types/utils.type'
-import config from 'src/constants/config'
+import InputFile from 'src/components/InputFile/InputFile'
 
 type FormData = Pick<UserSchema, 'name' | 'address' | 'phone' | 'date_of_birth' | 'avatar'>
 type FormDataError = Omit<FormData, 'date_of_birth'> & {
@@ -24,7 +24,6 @@ type FormDataError = Omit<FormData, 'date_of_birth'> & {
 const profileSchema = userSchema.pick(['name', 'address', 'phone', 'date_of_birth', 'avatar'])
 
 function Profile() {
-  const fileInputRef = useRef<HTMLInputElement>(null)
   const { profile, setProfile } = useContext(AppContext)
   const [file, setFile] = useState<File>()
   const previewImage = useMemo(() => {
@@ -77,6 +76,10 @@ function Profile() {
     }
   }, [profileData, setValue, setProfile])
 
+  const handleChangeFile = (file: File) => {
+    setFile(file)
+  }
+
   const onSubmit = handleSubmit(async (data) => {
     try {
       if (file) {
@@ -106,25 +109,6 @@ function Profile() {
       }
     }
   })
-
-  const handleUpload = () => {
-    fileInputRef.current?.click()
-  }
-
-  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const fileFromLocal = event.target.files?.[0]
-
-    if (fileFromLocal && (fileFromLocal.size >= config.maxSizeUploadAvatar || !fileFromLocal.type.includes('image/'))) {
-      toast.error('Dung lượng file tối đa 1 MB. Định dạng:.JPEG, .PNG')
-      return null
-    }
-    setFile(fileFromLocal)
-  }
-
-  const onInputClick = (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ;(event.target as any).value = ''
-  }
 
   return (
     <div className='rounded-sm bg-white px-2 pb-10 shadow md:px-7 md:pb-20'>
@@ -219,21 +203,8 @@ function Profile() {
               />
             </div>
 
-            <input
-              ref={fileInputRef}
-              className='hidden'
-              type='file'
-              accept='.jpg,.jpeg,.png'
-              onChange={onFileChange}
-              onClick={onInputClick}
-            />
-            <button
-              type='button'
-              className='flex h-10 items-center justify-end rounded-sm border bg-white px-6 text-sm text-gray-600 shadow-sm'
-              onClick={handleUpload}
-            >
-              Chọn ảnh
-            </button>
+            <InputFile onFileChange={handleChangeFile} />
+
             <div className='mt-3 text-gray-400'>
               <div>Dung lượng file tối đa 1 MB</div>
               <div>Định dạng:.JPEG, .PNG</div>

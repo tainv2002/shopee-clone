@@ -1,9 +1,10 @@
 import { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import path from 'src/constants/path'
 import { AppContext } from 'src/contexts/app.context'
 import userImage from 'src/assets/images/user.svg'
 import { getAvatarUrl } from 'src/utils/utils'
+import classNames from 'classnames'
 
 function UserSideNav() {
   const { profile } = useContext(AppContext)
@@ -33,39 +34,63 @@ function UserSideNav() {
         </div>
       </div>
 
-      <div className='mt-7 flex flex-col gap-2'>
-        <Link to={path.profile} className='flex items-center capitalize text-orange transition-colors'>
+      <div className='mt-7 flex flex-col gap-4'>
+        <NavLink
+          to={path.profile}
+          className={({ isActive }) =>
+            classNames('flex items-center capitalize transition-colors', {
+              'text-orange': isActive,
+              'text-gray-600': !isActive
+            })
+          }
+        >
           <div className='mr-3 h-[18px] w-[18px]'>
             <img
               src='https://down-vn.img.susercontent.com/file/ba61750a46794d8847c3f463c5e71cc4'
               alt=''
-              className='h-full w-full object-cover'
+              className='relative top-[-1px] h-full w-full object-cover'
             />
           </div>
           Tài khoản của tôi
-        </Link>
+        </NavLink>
 
-        <Link to={path.changePassword} className='flex items-center capitalize text-gray-600 transition-colors'>
+        <NavLink
+          to={path.changePassword}
+          className={({ isActive }) =>
+            classNames('flex items-center capitalize transition-colors', {
+              'text-orange': isActive,
+              'text-gray-600': !isActive
+            })
+          }
+        >
           <div className='mr-3 h-[18px] w-[18px]'>
             <img
               src='https://down-vn.img.susercontent.com/file/f0049e9df4e536bc3e7f140d071e9078'
               alt=''
-              className='h-full w-full object-cover'
+              className='relative top-[-1px] h-full w-full object-cover'
             />
           </div>
           Đơn mua
-        </Link>
+        </NavLink>
 
-        <Link to={path.historyPurchase} className='flex items-center capitalize text-gray-600 transition-colors'>
+        <NavLink
+          to={path.historyPurchase}
+          className={({ isActive }) =>
+            classNames('flex items-center capitalize transition-colors', {
+              'text-orange': isActive,
+              'text-gray-600': !isActive
+            })
+          }
+        >
           <div className='mr-3 h-[18px] w-[18px]'>
             <img
               src='https://down-vn.img.susercontent.com/file/ba61750a46794d8847c3f463c5e71cc4'
               alt=''
-              className='h-full w-full object-cover'
+              className='relative top-[-1px] h-full w-full object-cover'
             />
           </div>
           Đổi mật khẩu
-        </Link>
+        </NavLink>
       </div>
     </div>
   )
