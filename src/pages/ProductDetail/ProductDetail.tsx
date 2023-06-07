@@ -26,7 +26,6 @@ function ProductDetail() {
   const { data: productDetailData } = useQuery({
     queryKey: ['product', id],
     queryFn: () => productApi.getProductDetail(id as string)
-    // keepPreviousData: true
   })
 
   const [currentIndexImages, setCurrentIndexImages] = useState([0, 5])

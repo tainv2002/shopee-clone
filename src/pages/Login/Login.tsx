@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import Input from 'src/components/Input'
 import authApi from 'src/apis/auth.api'
-import { ErrorResponseApi, SuccessResponseApi } from 'src/types/utils.type'
+import { ErrorResponseApi } from 'src/types/utils.type'
 import { Schema, schema } from 'src/utils/rules'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { AppContext } from 'src/contexts/app.context'

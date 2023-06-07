@@ -1,21 +1,22 @@
-import { useContext } from 'react'
+import { useContext, lazy, Suspense } from 'react'
 import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 
 import { AppContext } from './contexts/app.context'
 import path from './constants/path'
-import ProductList from './pages/ProductList'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import RegisterLayout from './layouts/RegisterLayout'
-import MainLayout from './layouts/MainLayout'
-import ProductDetail from './pages/ProductDetail'
-import Cart from './pages/Cart'
 import CartLayout from './layouts/CartLayout'
+import MainLayout from './layouts/MainLayout'
+import RegisterLayout from './layouts/RegisterLayout'
 import UserLayout from './pages/User/layouts/UserLayout'
-import Profile from './pages/User/pages/Profile'
-import ChangePassword from './pages/User/pages/ChangePassword'
-import HistoryPurchase from './pages/User/pages/HistoryPurchase'
-import NotFound from './pages/NotFound'
+
+const Login = lazy(() => import('./pages/Login'))
+const Register = lazy(() => import('./pages/Register'))
+const ProductList = lazy(() => import('./pages/ProductList'))
+const Cart = lazy(() => import('./pages/Cart'))
+const ProductDetail = lazy(() => import('./pages/ProductDetail'))
+const Profile = lazy(() => import('./pages/User/pages/Profile'))
+const ChangePassword = lazy(() => import('./pages/User/pages/ChangePassword'))
+const HistoryPurchase = lazy(() => import('./pages/User/pages/HistoryPurchase'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -35,11 +36,19 @@ function useRouteElements() {
       children: [
         {
           path: path.home,
-          element: <ProductList />
+          element: (
+            <Suspense fallback={<div>Loading...</div>}>
+              <ProductList />
+            </Suspense>
+          )
         },
         {
           path: path.productDetail,
-          element: <ProductDetail />
+          element: (
+            <Suspense fallback={<div>Loading...</div>}>
+              <ProductDetail />
+            </Suspense>
+          )
         }
       ]
     },
@@ -55,9 +64,30 @@ function useRouteElements() {
               path: path.user,
               element: <UserLayout />,
               children: [
-                { path: path.profile, element: <Profile /> },
-                { path: path.changePassword, element: <ChangePassword /> },
-                { path: path.historyPurchase, element: <HistoryPurchase /> }
+                {
+                  path: path.profile,
+                  element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <Profile />
+                    </Suspense>
+                  )
+                },
+                {
+                  path: path.changePassword,
+                  element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <ChangePassword />
+                    </Suspense>
+                  )
+                },
+                {
+                  path: path.historyPurchase,
+                  element: (
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <HistoryPurchase />
+                    </Suspense>
+                  )
+                }
               ]
             }
           ]
@@ -65,7 +95,16 @@ function useRouteElements() {
         {
           path: '',
           element: <CartLayout />,
-          children: [{ path: path.cart, element: <Cart /> }]
+          children: [
+            {
+              path: path.cart,
+              element: (
+                <Suspense fallback={<div>Loading...</div>}>
+                  <Cart />
+                </Suspense>
+              )
+            }
+          ]
         }
       ]
     },
@@ -77,8 +116,22 @@ function useRouteElements() {
           path: '',
           element: <RegisterLayout />,
           children: [
-            { path: path.login, element: <Login /> },
-            { path: path.register, element: <Register /> }
+            {
+              path: path.login,
+              element: (
+                <Suspense fallback={<div>Loading...</div>}>
+                  <Login />
+                </Suspense>
+              )
+            },
+            {
+              path: path.register,
+              element: (
+                <Suspense fallback={<div>Loading...</div>}>
+                  <Register />
+                </Suspense>
+              )
+            }
           ]
         }
       ]
@@ -86,7 +139,16 @@ function useRouteElements() {
     {
       path: '*',
       element: <MainLayout />,
-      children: [{ path: '*', element: <NotFound /> }]
+      children: [
+        {
+          path: '*',
+          element: (
+            <Suspense fallback={<div>Loading...</div>}>
+              <NotFound />
+            </Suspense>
+          )
+        }
+      ]
     }
   ])
 

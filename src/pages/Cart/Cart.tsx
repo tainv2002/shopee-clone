@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import keyBy from 'lodash/keyBy'
 import { produce } from 'immer'
 import { toast } from 'react-toastify'
 import { Link, useLocation } from 'react-router-dom'
@@ -83,7 +83,7 @@ function Cart() {
   useEffect(() => {
     if (purchasesInCart) {
       setExtendedPurchases((prev) => {
-        const extendedPurchasesObject = _.keyBy(prev, '_id')
+        const extendedPurchasesObject = keyBy(prev, '_id')
 
         return purchasesInCart.map((purchase) => {
           const isChoosenPurchaseFromLocation = choosenPurchaseIdFromLocation === purchase._id

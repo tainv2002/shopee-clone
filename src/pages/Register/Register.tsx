@@ -3,8 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { yupResolver } from '@hookform/resolvers/yup'
-import _ from 'lodash'
-
+import omit from 'lodash/omit'
 import Input from 'src/components/Input'
 import { schema, Schema } from 'src/utils/rules'
 import authApi from 'src/apis/auth.api'
@@ -35,7 +34,7 @@ function Register() {
   })
 
   const onSubmit = handleSubmit((data) => {
-    const body = _.omit(data, ['confirm_password'])
+    const body = omit(data, ['confirm_password'])
 
     registerAccountMutation.mutate(body, {
       onSuccess: (data) => {
