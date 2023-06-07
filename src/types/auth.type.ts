@@ -8,3 +8,7 @@ export type AuthResponse = SuccessResponseApi<{
   expires_refresh_token: number
   user: User
 }>
+
+export type RefreshTokenResponse = SuccessResponseApi<{
+  access_token: string
+}>

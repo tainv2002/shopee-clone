@@ -87,7 +87,7 @@ function NavHeader() {
                   Tài khoản của tôi
                 </Link>
                 <Link
-                  to='/'
+                  to={path.historyPurchase}
                   className='block px-2 py-3 text-left text-sm text-black hover:bg-gray-100 hover:text-cyan-300'
                 >
                   Đơn mua

@@ -1,8 +1,24 @@
 import axios, { AxiosError, HttpStatusCode } from 'axios'
+import { ErrorResponseApi } from 'src/types/utils.type'
 
-export const isAxiosUnprocessableEntityError = <FormError>(error: unknown): error is AxiosError<FormError> => {
+export const isAxiosUnprocessableEntityError = <UnprocessableEntityError>(
+  error: unknown
+): error is AxiosError<UnprocessableEntityError> => {
   // eslint-disable-next-line import/no-named-as-default-member
   return axios.isAxiosError(error) && error.response?.status === HttpStatusCode.UnprocessableEntity
+}
+
+export const isAxiosUnauthorizedError = <UnauthorizedError>(error: unknown): error is AxiosError<UnauthorizedError> => {
+  // eslint-disable-next-line import/no-named-as-default-member
+  return axios.isAxiosError(error) && error.response?.status === HttpStatusCode.Unauthorized
+}
+
+export const isAxiosExpiredTokenError = <ExpiredTokenError>(error: unknown): error is AxiosError<ExpiredTokenError> => {
+  // eslint-disable-next-line import/no-named-as-default-member
+  return (
+    isAxiosUnauthorizedError<ErrorResponseApi<{ name: string; message: string }>>(error) &&
+    error.response?.data.data?.name === 'EXPIRED_TOKEN'
+  )
 }
 
 export const formatCurrency = (currency: number) => {
