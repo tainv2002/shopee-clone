@@ -12,6 +12,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { NoUndefinedField } from 'src/types/utils.type'
 import RatingStars from '../RatingStars'
 import { QueryConfig } from 'src/hooks/useQueryConfig'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   categories: Category[] | []
@@ -23,6 +24,7 @@ type FormData = NoUndefinedField<Pick<Schema, 'price_max' | 'price_min'>>
 const priceSchema = schema.pick(['price_max', 'price_min'])
 
 function AsideFilter({ categories = [], queryConfig }: Props) {
+  const { t } = useTranslation('home')
   const { category } = queryConfig
 
   const navigate = useNavigate()
@@ -31,7 +33,7 @@ function AsideFilter({ categories = [], queryConfig }: Props) {
     control,
     handleSubmit,
     trigger,
-    setValue,
+    reset,
     formState: { errors }
   } = useForm<FormData>({
     defaultValues: {
@@ -62,8 +64,7 @@ function AsideFilter({ categories = [], queryConfig }: Props) {
   )
 
   const handleRemoveAll = () => {
-    setValue('price_max', '')
-    setValue('price_min', '')
+    reset()
     navigate({
       pathname: path.home,
       search: createSearchParams(
@@ -93,7 +94,7 @@ function AsideFilter({ categories = [], queryConfig }: Props) {
             </g>
           </g>
         </svg>
-        Tất cả danh mục
+        {t('aside filter.all categories')}
       </Link>
 
       <div className='my-4 h-[1px] bg-gray-200' />
@@ -142,7 +143,7 @@ function AsideFilter({ categories = [], queryConfig }: Props) {
             ></polyline>
           </g>
         </svg>
-        Bộ lọc tìm kiếm
+        {t('aside filter.filter search')}
       </Link>
 
       <div className='my-4 h-[1px] bg-gray-200' />

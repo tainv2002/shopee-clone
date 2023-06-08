@@ -14,8 +14,10 @@ import purchaseApi from 'src/apis/purchase.api'
 import { purchasesStatus } from 'src/constants/purchase'
 import { AppContext } from 'src/contexts/app.context'
 import path from 'src/constants/path'
+import { useTranslation } from 'react-i18next'
 
 function ProductDetail() {
+  const { t } = useTranslation(['product'])
   const { isAuthenticated } = useContext(AppContext)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -257,7 +259,9 @@ function ProductDetail() {
                   onDecrease={handleBuyCount}
                 />
 
-                <div className='ml-6 text-sm text-gray-500'>{product.quantity} sản phẩm có sẵn</div>
+                <div className='ml-6 text-sm text-gray-500'>
+                  {product.quantity} {t('product:available')}
+                </div>
               </div>
 
               <div className='mt-8 flex items-center'>
