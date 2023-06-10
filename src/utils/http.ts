@@ -6,8 +6,8 @@ import {
   getAccessTokenFromLS,
   getProfileFromLS,
   getRefreshTokenFromLS,
-  saveAccessTokenToLS,
-  saveRefreshTokenToLS,
+  setAccessTokenToLS,
+  setRefreshTokenToLS,
   setProfileToLS
 } from './auth'
 import { URL_LOGIN, URL_LOGOUT, URL_REFRESH_TOKEN, URL_REGISTER } from 'src/apis/auth.api'
@@ -52,8 +52,8 @@ function createHttpInstance() {
         access_token = data.data?.access_token
         refresh_token = data.data?.refresh_token
         profile = data.data?.user
-        saveAccessTokenToLS(access_token)
-        saveRefreshTokenToLS(refresh_token)
+        setAccessTokenToLS(access_token)
+        setRefreshTokenToLS(refresh_token)
         setProfileToLS(profile)
       } else if (url === URL_LOGOUT) {
         access_token = ''
@@ -126,7 +126,7 @@ function createHttpInstance() {
       })
       .then((res) => {
         access_token = res.data.data.access_token
-        saveAccessTokenToLS(access_token)
+        setAccessTokenToLS(access_token)
         return access_token
       })
       .catch((err) => {
