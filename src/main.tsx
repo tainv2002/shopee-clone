@@ -3,36 +3,12 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from 'src/App'
 import { BrowserRouter } from 'react-router-dom'
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { AppProvider } from './contexts/app.context'
-import ErrorBoundary from './components/ErrorBoundary'
-import 'src/i18n/i18n'
-import { HelmetProvider } from 'react-helmet-async'
-
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      retry: 0
-    }
-  }
-})
+import 'src/i18n'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <AppProvider>
-          <HelmetProvider>
-            <ErrorBoundary>
-              <App />
-            </ErrorBoundary>
-          </HelmetProvider>
-        </AppProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <App />
     </BrowserRouter>
   </React.StrictMode>
 )

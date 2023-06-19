@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { isAxiosError, isAxiosUnprocessableEntityError } from '../utils'
-import { AxiosError } from 'axios'
-import { HttpStatusCode } from 'axios'
+import { AxiosError, HttpStatusCode } from 'axios'
 // describe dùng để mô tả tập hợp các ngữ cảnh hoặc đơn vị cần test: VD function, component
 describe('isAxiosError', () => {
   // it dùng để ghi chú trường hợp cần test

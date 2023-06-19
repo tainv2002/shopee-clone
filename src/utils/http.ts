@@ -14,7 +14,7 @@ import { URL_LOGIN, URL_LOGOUT, URL_REFRESH_TOKEN, URL_REGISTER } from 'src/apis
 import { isAxiosExpiredTokenError, isAxiosUnauthorizedError } from './utils'
 import { ErrorResponseApi } from 'src/types/utils.type'
 
-function createHttpInstance() {
+export function createHttpInstance() {
   let access_token = getAccessTokenFromLS()
   let refresh_token = getRefreshTokenFromLS()
   let profile = getProfileFromLS()
