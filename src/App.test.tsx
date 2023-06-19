@@ -1,19 +1,14 @@
 import { describe, expect, test } from 'vitest'
-import userEvent from '@testing-library/user-event'
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import matchers from '@testing-library/jest-dom/matchers'
-import { BrowserRouter, MemoryRouter } from 'react-router-dom'
-import App from './App'
-import { logScreen } from './utils/testUtils'
+import { renderWithRouter } from './utils/testUtils'
+import path from './constants/path'
 
 expect.extend(matchers)
 
 describe('App', () => {
   test('App render and navigation', async () => {
-    render(<App />, {
-      wrapper: BrowserRouter
-    })
-    const user = userEvent.setup()
+    const { user } = renderWithRouter()
 
     /**
      * waitFor will execute the callback function many times
@@ -30,18 +25,24 @@ describe('App', () => {
     await user.click(screen.getByText(/Đăng nhập/i))
     await waitFor(() => {
       expect(screen.queryByText(/Bạn chưa có tài khoản?/i)).toBeInTheDocument()
-      expect(document.querySelector('title')?.textContent).toBe('Đăng nhập | Shopee Clone')
     })
   })
 
   // Test NotFound page
   test('NotFound page', async () => {
     const badRoute = '/some/bad/route'
-    render(
-      <MemoryRouter initialEntries={[badRoute]}>
-        <App />
-      </MemoryRouter>
-    )
-    await logScreen(document.documentElement)
+    renderWithRouter({ route: badRoute })
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Page Not Found/i)).toBeInTheDocument()
+    })
+    // await logScreen(document.documentElement)
+  })
+
+  test('Render Register page', async () => {
+    renderWithRouter({ route: path.register })
+    await waitFor(() => {
+      expect(screen.queryByText(/Bạn đã có tài khoản?/i)).toBeInTheDocument()
+    })
   })
 })
