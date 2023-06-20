@@ -2,6 +2,7 @@ import { createHttpInstance } from '../http'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { HttpStatusCode } from 'axios'
 import { setAccessTokenToLS, setRefreshTokenToLS } from '../auth'
+import { access_token_1s, refresh_token_1000days } from 'src/msw/auth.msw'
 
 describe('http axios', () => {
   let http = createHttpInstance()
@@ -9,11 +10,6 @@ describe('http axios', () => {
     localStorage.clear()
     http = createHttpInstance()
   })
-  const access_token_1s =
-    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NjI1MDI4MWZhN2Q2MDMzOGJmYmFiOSIsImVtYWlsIjoidGFpbnZAZ21haWwuY29tIiwicm9sZXMiOlsiVXNlciJdLCJjcmVhdGVkX2F0IjoiMjAyMy0wNi0xNVQxMjo0NDowOS45MjlaIiwiaWF0IjoxNjg2ODMzMDQ5LCJleHAiOjE2ODY4MzMwNTB9.o66T2BkQNa5xlHOEhXQ1P_myV7J2McX7F3K3c5ZkR6k'
-
-  const refresh_token_1000days =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NjI1MDI4MWZhN2Q2MDMzOGJmYmFiOSIsImVtYWlsIjoidGFpbnZAZ21haWwuY29tIiwicm9sZXMiOlsiVXNlciJdLCJjcmVhdGVkX2F0IjoiMjAyMy0wNi0xNVQxMjo0Njo1My4wMTlaIiwiaWF0IjoxNjg2ODMzMjEzLCJleHAiOjE3NzMyMzMyMTN9.EjDNA7ovM1t5bOeNmZ74pUaZEi4vOD6GXaDFvF5-IpA'
 
   // Should not use apis folder to make requests
   // Because we just test http file, we should only use http
@@ -30,7 +26,6 @@ describe('http axios', () => {
       password: '123123'
     })
     const res = await http.get('me')
-
     expect(res.status).toBe(HttpStatusCode.Ok)
   })
 

@@ -51,7 +51,7 @@ describe('Test Login page', () => {
 
   it('Not display error when user typed true value', async () => {
     fireEvent.change(emailInput, {
-      target: { value: 'test@gmail.com' }
+      target: { value: 'tainv@gmail.com' }
     })
 
     fireEvent.change(passwordInput, {
