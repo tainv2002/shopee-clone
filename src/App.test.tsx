@@ -33,7 +33,6 @@ describe('App', () => {
     await waitFor(() => {
       expect(screen.queryByText(/Page Not Found/i)).toBeInTheDocument()
     })
-    // await logScreen(document.documentElement)
   })
 
   test('Render Register page', async () => {

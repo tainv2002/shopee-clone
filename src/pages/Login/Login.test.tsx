@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { fireEvent, screen, waitFor } from '@testing-library/react'
 import path from 'src/constants/path'
-import { logScreen, renderWithRouter } from 'src/utils/testUtils'
+import { renderWithRouter } from 'src/utils/testUtils'
 
 describe('Test Login page', () => {
   let emailInput: HTMLInputElement
@@ -26,8 +26,6 @@ describe('Test Login page', () => {
       expect(screen.queryByText(/Email là bắt buộc/i)).toBeTruthy()
       expect(screen.queryByText(/Mật khẩu là bắt buộc/i)).toBeTruthy()
     })
-
-    // await logScreen()
   })
 
   it('Display error when user typed wrong value', async () => {
@@ -66,7 +64,5 @@ describe('Test Login page', () => {
     await waitFor(() => {
       expect(document.querySelector('title')?.textContent).toBe('Trang chủ | Shopee Clone')
     })
-
-    await logScreen()
   })
 })
