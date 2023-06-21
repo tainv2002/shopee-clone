@@ -10,6 +10,9 @@ export const access_token_1s =
 export const refresh_token_1000days =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NjI1MDI4MWZhN2Q2MDMzOGJmYmFiOSIsImVtYWlsIjoidGFpbnZAZ21haWwuY29tIiwicm9sZXMiOlsiVXNlciJdLCJjcmVhdGVkX2F0IjoiMjAyMy0wNi0xNVQxMjo0Njo1My4wMTlaIiwiaWF0IjoxNjg2ODMzMjEzLCJleHAiOjE3NzMyMzMyMTN9.EjDNA7ovM1t5bOeNmZ74pUaZEi4vOD6GXaDFvF5-IpA'
 
+export const access_token =
+  'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NjI1MDI4MWZhN2Q2MDMzOGJmYmFiOSIsImVtYWlsIjoidGFpbnZAZ21haWwuY29tIiwicm9sZXMiOlsiVXNlciJdLCJjcmVhdGVkX2F0IjoiMjAyMy0wNi0yMVQwNDowMTozOS41MzNaIiwiaWF0IjoxNjg3MzIwMDk5LCJleHAiOjE2ODgzMjAwOTh9.lLEi6LTi1ffueHYhJvcZaOaK5ZPpQTiWHqAc4MNGrKA'
+
 const loginRes = {
   message: 'Đăng nhập thành công',
   data: {
@@ -48,7 +51,7 @@ const loginRequest = rest.post(`${baseUrl}${URL_LOGIN}`, (req, res, ctx) => {
 })
 
 const refreshTokenRequest = rest.post(`${baseUrl}${URL_REFRESH_TOKEN}`, (req, res, ctx) => {
-  return res(ctx.status(HttpStatusCode.Ok), ctx.json(loginRes))
+  return res(ctx.status(HttpStatusCode.Ok), ctx.json(refreshTokenRes))
 })
 
 const authRequests = [loginRequest, refreshTokenRequest]

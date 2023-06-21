@@ -1,10 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { fireEvent, screen, waitFor } from '@testing-library/react'
-import matchers from '@testing-library/jest-dom/matchers'
 import path from 'src/constants/path'
 import { logScreen, renderWithRouter } from 'src/utils/testUtils'
-
-expect.extend(matchers)
 
 describe('Test Login page', () => {
   let emailInput: HTMLInputElement

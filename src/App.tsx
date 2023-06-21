@@ -7,7 +7,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import useRouteElements from './useRouteElements'
 import ErrorBoundary from './components/ErrorBoundary'
 import { LocalStorageEventTarget } from './utils/auth'
-import { AppProvider, AppContext } from './contexts/app.context'
+import { AppContext } from './contexts/app.context'
 
 function App() {
   const routeElements = useRouteElements()
@@ -23,12 +23,10 @@ function App() {
 
   return (
     <HelmetProvider>
-      <AppProvider>
-        <ErrorBoundary>
-          {routeElements}
-          <ToastContainer />
-        </ErrorBoundary>
-      </AppProvider>
+      <ErrorBoundary>
+        {routeElements}
+        <ToastContainer />
+      </ErrorBoundary>
       <ReactQueryDevtools initialIsOpen={false} />
     </HelmetProvider>
   )
