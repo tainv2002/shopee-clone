@@ -1,6 +1,9 @@
 import { ButtonHTMLAttributes } from 'react'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /**
+   * Is this the principal call to action on the page?
+   */
   isLoading?: boolean
 }
 
