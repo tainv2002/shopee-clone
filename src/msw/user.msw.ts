@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 import { HttpStatusCode } from 'axios'
-import { URL_LOGIN, URL_REFRESH_TOKEN } from 'src/apis/auth.api'
 import { access_token_1s } from './auth.msw'
 
 const baseUrl = import.meta.env.VITE_BASE_URL

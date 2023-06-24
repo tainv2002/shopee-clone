@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 import { HttpStatusCode } from 'axios'
-import { URL_LOGIN, URL_REFRESH_TOKEN } from 'src/apis/auth.api'
 
 const baseUrl = import.meta.env.VITE_BASE_URL
 
@@ -108,11 +107,11 @@ const productDetailRes = {
   }
 }
 
-const productsRequest = rest.get(`${baseUrl}products`, (req, res, ctx) => {
+const productsRequest = rest.get(`${baseUrl}products`, (_req, res, ctx) => {
   return res(ctx.status(HttpStatusCode.Ok), ctx.json(productsRes))
 })
 
-const productDetailRequest = rest.get(`${baseUrl}products/:id`, (req, res, ctx) => {
+const productDetailRequest = rest.get(`${baseUrl}products/:id`, (_req, res, ctx) => {
   return res(ctx.status(HttpStatusCode.Ok), ctx.json(productDetailRes))
 })
 

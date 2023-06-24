@@ -46,11 +46,11 @@ const refreshTokenRes = {
   }
 }
 
-const loginRequest = rest.post(`${baseUrl}${URL_LOGIN}`, (req, res, ctx) => {
+const loginRequest = rest.post(`${baseUrl}${URL_LOGIN}`, (_req, res, ctx) => {
   return res(ctx.status(HttpStatusCode.Ok), ctx.json(loginRes))
 })
 
-const refreshTokenRequest = rest.post(`${baseUrl}${URL_REFRESH_TOKEN}`, (req, res, ctx) => {
+const refreshTokenRequest = rest.post(`${baseUrl}${URL_REFRESH_TOKEN}`, (_req, res, ctx) => {
   return res(ctx.status(HttpStatusCode.Ok), ctx.json(refreshTokenRes))
 })
 

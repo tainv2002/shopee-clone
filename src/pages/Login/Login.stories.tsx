@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import Login from '.'
-import ProductDetail from 'src/pages/ProductDetail'
 import path from 'src/constants/path'
 import RegisterLayout from 'src/layouts/RegisterLayout'
 
