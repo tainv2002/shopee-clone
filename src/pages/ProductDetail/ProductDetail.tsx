@@ -150,7 +150,8 @@ function ProductDetail() {
           name='description'
           content={convert(product.description, {
             limits: {
-              maxInputLength: 150
+              maxInputLength: 150,
+              ellipsis: '...'
             }
           })}
         />
