@@ -18,15 +18,15 @@ export function createHttpInstance() {
   let access_token = getAccessTokenFromLS()
   let refresh_token = getRefreshTokenFromLS()
   let profile = getProfileFromLS()
-  let refreshTokenRequest: Promise<string> | null = null // Biến này để làm cờ tránh gọi refresh token request nhiều lần 1 lúc
+  let refreshTokenRequest: Promise<void> | null = null // Biến này để làm cờ tránh gọi refresh token request nhiều lần 1 lúc
 
   const http = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
     timeout: 10000,
     headers: {
       'Content-Type': 'application/json',
-      'expire-access-token': 5, // 10s
-      'expire-refresh-token': 60 * 60 // 1h
+      'expire-access-token': 3600, // 1h
+      'expire-refresh-token': 86400000
     }
   })
 
@@ -63,7 +63,7 @@ export function createHttpInstance() {
       }
       return response
     },
-    function (error: AxiosError) {
+    async function (error: AxiosError) {
       // Chỉ toast lỗi không phải 422 và 401
       if (
         error.response?.status &&
@@ -92,15 +92,14 @@ export function createHttpInstance() {
             ? refreshTokenRequest
             : handleRefreshToken().finally(() => {
                 // Giữ refreshTokenRequest trong 10s cho những request tiếp theo nếu có 401 thì dùng
+
                 setTimeout(() => {
                   refreshTokenRequest = null
                 }, 10000)
               })
 
-          return refreshTokenRequest.then(() => {
-            // Tiếp tục gọi lại request cũ vừa bị lỗi
-            return http(config)
-          })
+          await refreshTokenRequest
+          return await http(config)
         }
 
         // Còn những trường hợp token không đúng
@@ -119,22 +118,19 @@ export function createHttpInstance() {
     }
   )
 
-  const handleRefreshToken = () => {
-    return http
-      .post<RefreshTokenResponse>(URL_REFRESH_TOKEN, {
+  const handleRefreshToken = async () => {
+    try {
+      const res = await http.post<RefreshTokenResponse>(URL_REFRESH_TOKEN, {
         refresh_token
       })
-      .then((res) => {
-        access_token = res.data.data.access_token
-        setAccessTokenToLS(access_token)
-        return access_token
-      })
-      .catch((err) => {
-        clearLS()
-        access_token = ''
-        refresh_token = ''
-        throw err
-      })
+      access_token = res.data.data.access_token
+      setAccessTokenToLS(access_token)
+    } catch (err) {
+      clearLS()
+      access_token = ''
+      refresh_token = ''
+      throw err
+    }
   }
 
   return http

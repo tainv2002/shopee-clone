@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import UserSideNav from '../../components/UserSideNav/UserSideNav'
+import { memo } from 'react'
 
 function UserLayout() {
   return (
@@ -18,4 +19,4 @@ function UserLayout() {
   )
 }
 
-export default UserLayout
+export default memo(UserLayout)

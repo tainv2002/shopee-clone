@@ -12,6 +12,7 @@ import { AppContext } from './contexts/app.context'
 function App() {
   const routeElements = useRouteElements()
   const { reset } = useContext(AppContext)
+  console.log('app')
 
   useEffect(() => {
     LocalStorageEventTarget.addEventListener('clearLS', reset)
