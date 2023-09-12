@@ -1,8 +1,12 @@
 # Shopee Clone
 
-This is the frontend for the Shopee Clone project.
+This is a project to clone the user page of the e-commerce platform [Shopee](https://shopee.vn/).
 
 - Link: [https://shopee-clone-g3gwg9jtf-tainv2002.vercel.app/](https://shopee-clone-g3gwg9jtf-tainv2002.vercel.app/)
+
+## Technologies used: 
+- REST API, ReactJs, Typescript, Tailwindcss, React Router, React Hook Form, 
+Yup, React Query, Vite, Vitest, Storybook, ESLint, Prettier, React Helmet.
   
 ## Functions include:
 - Manage authentication with JWT (automatic token refresh applied)
