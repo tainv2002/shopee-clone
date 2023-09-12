@@ -23,8 +23,6 @@ This is the frontend for the Shopee Clone project.
 
 - SEO with React Helmet
 
-- Separate the private and public routes.
-
 - Unit Test
 
 - Manage components with Storybook
