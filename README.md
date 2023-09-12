@@ -2,7 +2,7 @@
 
 This is a project to clone the user page of the e-commerce platform [Shopee](https://shopee.vn/).
 
-- Link: [https://shopee-clone-g3gwg9jtf-tainv2002.vercel.app/](https://shopee-clone-g3gwg9jtf-tainv2002.vercel.app/)
+- Website: [https://shopee-clone-sepia.vercel.app/](https://shopee-clone-sepia.vercel.app/)
 
 ## Technologies used: 
 - REST API, ReactJs, Typescript, Tailwindcss, React Router, React Hook Form, 
