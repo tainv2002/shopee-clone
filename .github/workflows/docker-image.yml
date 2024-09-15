@@ -1,0 +1,43 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the Docker image
+        run: |
+          IMAGE_TAG=taijustin/shopee-clone:v0
+          docker build --progress=plain -t $IMAGE_TAG -f Dockerfile .
+          echo "::set-output name=image_tag::$IMAGE_TAG"
+        id: build
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+      - name: Push the Docker image
+        run: docker push ${{ steps.build.outputs.image_tag }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USERNAME }}
+          password: ${{ secrets.HOST_PASSWORD }}
+          script: |
+            echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+            docker pull taijustin/shopee-clone:v0
+            docker stop shopee-clone
+            docker rm shopee-clone 
+            docker run -dp 3001:80 --name shopee-clone --restart unless-stopped taijustin/shopee-clone:v0
