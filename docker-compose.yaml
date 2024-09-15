@@ -1,0 +1,8 @@
+services:
+  shopee-clone:
+    image: taijustin/shopee-clone:v0
+    build:
+      context: .
+    container_name: shopee-clone
+    ports:
+      - "3001:80"
